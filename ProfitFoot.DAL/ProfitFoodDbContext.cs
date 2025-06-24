@@ -11,6 +11,19 @@ namespace ProfitFoot.DAL
         }
 
         public DbSet<ProductGroup> ProductGroups { get; set; }
+        public DbSet<Product> Products { get; set; }
 
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .HasOne(x => x.Group)
+                .WithMany()
+                .HasForeignKey(x => x.GroupId);
+            modelBuilder.Entity<ProductGroup>()
+                .HasMany(x=> x.Products)
+                .WithOne(x=>x.Group)
+                .HasForeignKey(x=>x.GroupId);
+        }
     }
 }
