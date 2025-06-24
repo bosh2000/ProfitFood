@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProfitFood.DAL.Repository.Interfaces
 {
-    internal interface IBaseUnitStorageRepository : IRepositoryBase<BaseUnitStorage>
+    public interface IBaseUnitStorageRepository : IRepositoryBase<BaseUnitStorage>
     {
     }
 }

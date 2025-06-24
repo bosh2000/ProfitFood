@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace ProfitFood.DAL.Repository.Implementation
 {
-    internal class ProfitDbRepository
+    public class ProfitDbRepository : IProfitDbRepository
     {
         public readonly ProfitFoodDbContext _context;
 
         public ProfitDbRepository(ProfitFoodDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public IBaseUnitRepository BaseUnitRepository => new BaseUnitRepository(_context);
