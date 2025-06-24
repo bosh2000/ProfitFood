@@ -22,15 +22,19 @@ namespace ProfitFood.Model.DBModel
         }
 
         [Required]
-        public string Name { get; protected set; }
+        public string Name { get; private set; }
 
-        public string Description { get; protected set; }
-        public string FullName { get; protected set; }
+        public string Description { get; private set; }
+        public string FullName { get; private set; }
         public Guid GroupId { get; protected set; }
 
         [Required]
         [ForeignKey(nameof(GroupId))]
         public virtual ProductGroup Group { get; protected set; }
+
+        public Guid BaseUnitId { get; protected set; }
+        [ForeignKey(nameof(BaseUnitId))]
+        public virtual BaseUnit BaseUnit { get; protected set; }
 
         private static OperationResult<Product> Create(string name, string description, string fullname, ProductGroup group, ILogger log)
         {
