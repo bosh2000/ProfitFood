@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProfitFood.Model.BusinessRules
+namespace ProfitFood.Model.BusinessRules.BaseUnit
 {
     public class BaseUnitNameMustNotBeEmprtyRules : IBusinessRule
     {

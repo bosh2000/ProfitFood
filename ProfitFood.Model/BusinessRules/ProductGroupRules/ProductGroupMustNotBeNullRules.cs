@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProfitFood.Services.BusinessRules
+namespace ProfitFood.Model.BusinessRules.ProductGroupRules
 {
     public class ProductGroupMustNotBeNullRules : IBusinessRule
     {

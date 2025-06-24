@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using ProfitFood.Model.BusinessRules.Product;
+using ProfitFood.Model.BusinessRules.ProductGroupRules;
 using ProfitFood.Model.Infrastructure;
-using ProfitFood.Services.BusinessRules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -28,11 +29,15 @@ namespace ProfitFood.Model.DBModel
         public string FullName { get; private set; }
         public Guid GroupId { get; protected set; }
 
+        public Guid BaseUnitStorageId { get; protected set; }
+        public virtual BaseUnitStorage BaseUnitStorage { get; protected set; }
+
         [Required]
         [ForeignKey(nameof(GroupId))]
         public virtual ProductGroup Group { get; protected set; }
 
         public Guid BaseUnitId { get; protected set; }
+
         [ForeignKey(nameof(BaseUnitId))]
         public virtual BaseUnit BaseUnit { get; protected set; }
 
@@ -42,12 +47,11 @@ namespace ProfitFood.Model.DBModel
 
             var ruleEmptyName = new ProductNameMustNotBeEmptyRule(name);
             if (ruleEmptyName.IsBroken())
-                errors.Add(new Error(nameof(name),ruleEmptyName.Message));
+                errors.Add(new Error(nameof(name), ruleEmptyName.Message));
 
             var ruleGroupName = new ProductGroupMustNotBeNullRules(group);
             if (ruleGroupName.IsBroken())
-                errors.Add(new Error(nameof(group),ruleGroupName.Message));
-
+                errors.Add(new Error(nameof(group), ruleGroupName.Message));
 
             if (errors.Any())
                 return OperationResult<Product>.Failure(errors);

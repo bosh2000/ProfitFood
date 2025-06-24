@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProfitFood.Services.BusinessRules
+namespace ProfitFood.Model.BusinessRules.Product
 {
     public class ProductNameMustNotBeEmptyRule : IBusinessRule
     {

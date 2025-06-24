@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using ProfitFood.Model.BusinessRules;
+using ProfitFood.Model.BusinessRules.ProductGroupRules;
 using ProfitFood.Model.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -6,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ProfitFood.Model.DBModel
 {
@@ -17,28 +20,46 @@ namespace ProfitFood.Model.DBModel
             this.Description = description;
         }
 
+        [MaxLength(1000)]
+        public string? Description { get; private set; }
 
         [Required]
         [MaxLength(200)]
-        public string Name { get; protected set; }
-
-        [MaxLength(1000)]
-        public string? Description { get; protected set; }
+        public string Name { get; private set; }
 
         public virtual ICollection<Product> Products { get; protected set; } = new List<Product>();
 
+        public OperationResult SetName(string newName)
+        {
+            List<Error> error = CheckName(newName);
+
+            if (error.Any())
+                return OperationResult<ProductGroup>.Failure(error);
+            Name = newName;
+            return OperationResult.Success();
+        }
+
+        private static List<Error> CheckName(string name)
+        {
+            var error = new List<Error>();
+
+            var ruleName = new ProductGroupNameMustNotBeEmpty(name);
+            if (ruleName.IsBroken())
+                error.Add(new Error(nameof(name), ruleName.Message));
+            var ruleLength = new ProductGroupNameLengthRules(name);
+            if (ruleLength.IsBroken())
+                error.Add(new Error(nameof(name), ruleLength.Message));
+            return error;
+        }
+
         private static OperationResult<ProductGroup> Create(string? name, string? desc)
         {
-            var error=new List<Error>();
+            var error = CheckName(name);
 
-            if (string.IsNullOrEmpty(name)) 
-                error.Add(new Error(nameof(name),"Имя группы обязательно"));
-            if (name?.Length > 200)
-                error.Add(new Error(nameof(name), "Длина наименования более 200 символов"));
             if (error.Any())
                 return OperationResult<ProductGroup>.Failure(error);
             return OperationResult<ProductGroup>
-                .Success(new ProductGroup(name,desc));
+                .Success(new ProductGroup(name, desc));
         }
     }
 }
