@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace ProfitFood.Model.DBModel
 {
-    internal class ProductGroup
+    public class ProductGroup
     {
 
-        private ProductGroup(string name, string desc)
+        private ProductGroup(string name, string description)
         {
             this.Name = name;
-            this.Description = desc;
+            this.Description = description;
         }
 
 

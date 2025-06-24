@@ -5,7 +5,10 @@ VisualStudioVersion = 17.13.35931.197 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfitFood.UI", "ProfitFood\ProfitFood.UI.csproj", "{96902602-14EE-4D15-B7E7-F1269D676700}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfitFoot.DAL", "ProfitFoot.DAL\ProfitFoot.DAL.csproj", "{FA543451-B97C-400E-93D7-E347E9E8CEF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfitFood.DAL", "ProfitFoot.DAL\ProfitFood.DAL.csproj", "{FA543451-B97C-400E-93D7-E347E9E8CEF2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{05FA52B5-209A-48C7-9EA8-6FE9EA1BBEF1} = {05FA52B5-209A-48C7-9EA8-6FE9EA1BBEF1}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfitFood.Model", "ProfitFood.Model\ProfitFood.Model.csproj", "{05FA52B5-209A-48C7-9EA8-6FE9EA1BBEF1}"
 EndProject
