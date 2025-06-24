@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProfitFood.Model.Infrastructure;
+using ProfitFood.Services.BusinessRules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -35,11 +36,14 @@ namespace ProfitFood.Model.DBModel
         {
             var errors = new List<Error>();
 
-            if (string.IsNullOrWhiteSpace(name))
-                errors.Add(new Error("Product.EmptyName", "Имя продукта обязательно"));
+            var ruleEmptyName = new ProductNameMustNotBeEmptyRule(name);
+            if (ruleEmptyName.IsBroken())
+                errors.Add(new Error(nameof(name),ruleEmptyName.Message));
 
-            if (group is null)
-                errors.Add(new Error("Product.MissingGroup", "Группа обязательна"));
+            var ruleGroupName = new ProductGroupMustNotBeNullRules(group);
+            if (ruleGroupName.IsBroken())
+                errors.Add(new Error(nameof(group),ruleGroupName.Message));
+
 
             if (errors.Any())
                 return OperationResult<Product>.Failure(errors);
