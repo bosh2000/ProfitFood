@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProfitFood.Model.DBModel
 {
-    internal class Product
+    public class Product
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
