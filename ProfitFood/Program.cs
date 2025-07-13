@@ -21,6 +21,7 @@ namespace ProfitFood.UI
                         );
                     services.AddScoped<IProfitDbRepository, ProfitDbRepository>();
                     services.AddSingleton<MainWindow>();
+                    services.AddSingleton<MainWindowViewModel>();
 
                     services.AddSingleton<App>();
                 }).

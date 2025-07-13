@@ -1,5 +1,8 @@
-﻿using ProfitFood.UI.ViewModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,17 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ProfitFood
+namespace ProfitFood.UI.Views.UserControls
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Логика взаимодействия для ProductsView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ProductsView : UserControl
     {
-        public MainWindow(MainWindowViewModel viewModel)
+        public ProductsView()
         {
             InitializeComponent();
-            DataContext = viewModel;
         }
     }
 }
