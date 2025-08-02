@@ -8,6 +8,8 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
     public class BaseUnitItemWindowViewModel : ViewModel
     {
         private string _baseUnitItemName;
+        private BaseUnitItemView _editingItem;
+        private bool _isEditMode;
 
         public string BaseUnitItemName
         {
@@ -21,6 +23,8 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
 
         public event Action<BaseUnitItemView> BaseUnitCreated;
 
+        public event Action<BaseUnitItemView> BaseUnitUpdated;
+
         public ICommand AddBaseUnitItemCommand { get; }
 
         public BaseUnitItemWindowViewModel()
@@ -28,13 +32,24 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
             AddBaseUnitItemCommand = new LambdaCommand(SaveBaseUnitUtem, _ => !string.IsNullOrWhiteSpace(BaseUnitItemName));
         }
 
+        public void InitializeForEdit(BaseUnitItemView baseUnitItem)
+        {
+            _isEditMode = true;
+            BaseUnitItemName = baseUnitItem.Name;
+            _editingItem = baseUnitItem;
+        }
+
         private void SaveBaseUnitUtem(object param)
         {
             var baseUnitItem = new BaseUnitItemView
             {
-                Name = BaseUnitItemName,
+                Id = _isEditMode ? _editingItem.Id : Guid.Empty,
+                Name = BaseUnitItemName
             };
-            BaseUnitCreated?.Invoke(baseUnitItem);
+            if (_isEditMode)
+                BaseUnitUpdated?.Invoke(baseUnitItem);
+            else
+                BaseUnitCreated?.Invoke(baseUnitItem);
         }
     }
 }

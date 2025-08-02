@@ -99,6 +99,40 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
 
         private void EditBaseUnitItem(object param)
         {
+            if (SelectedBaseUnit == null) return;
+
+            var editWindow = new BaseUnitItemWindow();
+            var viewModel = (BaseUnitItemWindowViewModel)editWindow.DataContext;
+
+            // Инициализируем в режиме редактирования
+            viewModel.InitializeForEdit(SelectedBaseUnit);
+
+            viewModel.BaseUnitUpdated += async updatedItem =>
+            {
+                var entity = await _profitDbRepository.BaseUnitRepository
+                    .FirstOfDefaultAsync(x => x.Id == updatedItem.Id);
+
+                if (entity != null)
+                {
+                    var result = entity.SetName(updatedItem.Name);
+                    if (!result.IsSuccess)
+                    {
+                        ShowErrors(result.Errors);
+                        return;
+                    }
+                    await _profitDbRepository.BaseUnitRepository.UpdateAsync(entity);
+
+                    // Обновляем элемент в коллекции
+                    var index = BaseUnits.IndexOf(SelectedBaseUnit);
+                    BaseUnits[index] = _mapper.Map<BaseUnitItemView>(entity);
+                    SelectedBaseUnit = BaseUnits[index];
+                }
+
+                editWindow.Close();
+            };
+
+            editWindow.Owner = Application.Current.MainWindow;
+            editWindow.ShowDialog();
         }
 
         // TODO Добавить вывод ошибок в StatusBar
