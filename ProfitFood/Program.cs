@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using ProfitFood.DAL.Repository.Implementation;
 using ProfitFood.DAL.Repository.Interfaces;
 using ProfitFood.UI.ViewModels;
+using ProfitFood.UI.ViewModels.BaseUnitViewModels;
 using ProfitFoot.DAL;
 
 namespace ProfitFood.UI
@@ -20,11 +21,12 @@ namespace ProfitFood.UI
                         option => option.UseSqlite("Data Source=profitfood.db")
                         );
                     services.AddScoped<IProfitDbRepository, ProfitDbRepository>();
-                    services.AddSingleton<MainWindow>();
-                    services.AddSingleton<MainWindowViewModel>();
-                    services.AddSingleton<ProductTabViewModel>();
+                    services.AddScoped<MainWindow>();
+                    services.AddScoped<MainWindowViewModel>();
+                    services.AddScoped<ProductTabViewModel>();
+                    services.AddScoped<BaseUnitTabViewModel>();
 
-                    services.AddSingleton<App>();
+                    services.AddScoped<App>();
                 }).
                 Build();
             using var scope = host.Services.CreateScope();

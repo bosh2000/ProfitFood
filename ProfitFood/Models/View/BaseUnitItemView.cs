@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProfitFood.UI.Models.View
 {
-    public class BaseUnitView
+    public class BaseUnitItemView
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

@@ -19,11 +19,11 @@ namespace ProfitFood.UI.ViewModels
     /// </summary>
     public class ProductTabViewModel : ViewModel
     {
-        public ObservableCollection<ProductView> Products { get; } = new ObservableCollection<ProductView>();
-        private ProductView _selectedProduct;
+        public ObservableCollection<ProductItemView> Products { get; } = new ObservableCollection<ProductItemView>();
+        private ProductItemView _selectedProduct;
         private readonly IProfitDbRepository _profitDbRepository;
 
-        public ProductView SelectedProduct
+        public ProductItemView SelectedProduct
         {
             get { return _selectedProduct; }
             set
@@ -51,7 +51,7 @@ namespace ProfitFood.UI.ViewModels
         private void LoadProducts()
         {
             Products.Clear();
-            Products.Add(new ProductView
+            Products.Add(new ProductItemView
             {
                 Id = Guid.NewGuid(),
                 Name = "Product1",
@@ -61,7 +61,7 @@ namespace ProfitFood.UI.ViewModels
                 FullName = "FullNamePRoduct",
                 Group = "ГруппаПродукта"
             });
-            Products.Add(new ProductView
+            Products.Add(new ProductItemView
             {
                 Id = Guid.NewGuid(),
                 Name = "Product2",
@@ -71,7 +71,7 @@ namespace ProfitFood.UI.ViewModels
                 FullName = "FullNamePRoduct2",
                 Group = "ГруппаПродукта"
             });
-            Products.Add(new ProductView
+            Products.Add(new ProductItemView
             {
                 Id = Guid.NewGuid(),
                 Name = "Product3",

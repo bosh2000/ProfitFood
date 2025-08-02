@@ -1,6 +1,7 @@
 ﻿using ProfitFood.DAL.Repository.Interfaces;
 using ProfitFood.UI.Infrastructure.Commands;
 using ProfitFood.UI.ViewModels.Base;
+using ProfitFood.UI.ViewModels.BaseUnitViewModels;
 using ProfitFood.UI.Views.UserControls;
 using System;
 using System.Collections.Generic;

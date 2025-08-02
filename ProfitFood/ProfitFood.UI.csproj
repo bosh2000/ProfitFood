@@ -6,11 +6,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <AssemblyVersion>1.0.1.92</AssemblyVersion>
-    <FileVersion>1.0.1.92</FileVersion>
+    <AssemblyVersion>1.0.1.114</AssemblyVersion>
+    <FileVersion>1.0.1.114</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="profitfood.db" />
     <None Remove="Resource\Images\main.ico" />
   </ItemGroup>
 
@@ -41,6 +42,12 @@
 
   <ItemGroup>
     <Folder Include="Новая папка\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="profitfood.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>
