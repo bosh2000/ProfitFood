@@ -6,7 +6,6 @@ using ProfitFood.UI.Models.View;
 using ProfitFood.UI.ViewModels.Base;
 using ProfitFood.UI.Views.BaseUnit;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -24,7 +23,7 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
 
         public BaseUnitItemView SelectedBaseUnit
         {
-            get { return _selectedBaseUnit; }
+            get => _selectedBaseUnit;
             set
             {
                 _selectedBaseUnit = value;
@@ -40,9 +39,9 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
         public BaseUnitTabViewModel(IProfitDbRepository repository)
         {
             _profitDbRepository = repository;
-            AddProductCommand = new LambdaCommand(AddProduct);
-            DeleteProductCommand = new LambdaCommandAsync(DeleteProduct, CanEditDelete);
-            EditProductCommand = new LambdaCommand(EditProduct, CanEditDelete);
+            AddProductCommand = new LambdaCommand(AddBaseUnitItem);
+            DeleteProductCommand = new LambdaCommandAsync(DeleteBaseUnitItem, CanEditDelete);
+            EditProductCommand = new LambdaCommand(EditBaseUnitItem, CanEditDelete);
             LoadBaseUnits();
         }
 
@@ -55,7 +54,7 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
                 BaseUnits.Add(new BaseUnitItemView { Id = unit.Id, Name = unit.Name });
         }
 
-        private async void AddProduct(object param)
+        private async void AddBaseUnitItem(object param)
         {
             var addBaseUnitWindows = new BaseUnitItemWindow();
             var viewModel = (BaseUnitItemWindowViewModel)addBaseUnitWindows.DataContext;
@@ -82,7 +81,7 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
             addBaseUnitWindows.ShowDialog();
         }
 
-        private async Task DeleteProduct(object param)
+        private async Task DeleteBaseUnitItem(object param)
         {
             MessageBoxResult result = MessageBox.Show(
                 "Вы уверенны что хотите удалить запись?",
@@ -100,10 +99,11 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
             }
         }
 
-        private void EditProduct(object param)
+        private void EditBaseUnitItem(object param)
         {
         }
 
+        // TODO Добавить вывод ошибок в StatusBar
         private void ShowErrors(IReadOnlyCollection<Error> errors)
         {
         }

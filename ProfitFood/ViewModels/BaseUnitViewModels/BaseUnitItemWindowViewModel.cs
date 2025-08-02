@@ -1,15 +1,7 @@
 ﻿using ProfitFood.UI.Infrastructure.Commands;
 using ProfitFood.UI.Models.View;
 using ProfitFood.UI.ViewModels.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Runtime.InteropServices.ObjectiveC;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Navigation;
 
 namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
 {

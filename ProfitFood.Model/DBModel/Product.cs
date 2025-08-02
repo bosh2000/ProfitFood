@@ -2,13 +2,8 @@
 using ProfitFood.Model.BusinessRules.Product;
 using ProfitFood.Model.BusinessRules.ProductGroupRules;
 using ProfitFood.Model.Infrastructure;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProfitFood.Model.DBModel
 {

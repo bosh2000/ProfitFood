@@ -1,10 +1,4 @@
-﻿using ProfitFood.DAL.Repository.Implementation;
-using ProfitFood.DAL.Repository.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ProfitFood.DAL.Repository.Interfaces;
 using System.Windows;
 
 namespace ProfitFood.UI

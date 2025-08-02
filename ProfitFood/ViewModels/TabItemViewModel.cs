@@ -1,11 +1,5 @@
 ﻿using ProfitFood.UI.Infrastructure.Commands;
 using ProfitFood.UI.ViewModels.Base;
-using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ProfitFood.UI.ViewModels
