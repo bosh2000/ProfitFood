@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProfitFood.UI.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,10 @@ namespace ProfitFood.UI.Views.UserControls
     /// </summary>
     public partial class ProductsView : UserControl
     {
-        public ProductsView()
+        public ProductsView(ProductTabViewModel productTabViewModel)
         {
             InitializeComponent();
+            DataContext = productTabViewModel;
         }
     }
 }
