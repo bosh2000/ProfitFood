@@ -6,6 +6,7 @@ using ProfitFood.UI.Models.View;
 using ProfitFood.UI.ViewModels.Base;
 using ProfitFood.UI.Views.BaseUnit;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -40,7 +41,7 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
         {
             _profitDbRepository = repository;
             AddProductCommand = new LambdaCommand(AddProduct);
-            DeleteProductCommand = new LambdaCommand(DeleteProduct, CanEditDelete);
+            DeleteProductCommand = new LambdaCommandAsync(DeleteProduct, CanEditDelete);
             EditProductCommand = new LambdaCommand(EditProduct, CanEditDelete);
             LoadBaseUnits();
         }
@@ -81,8 +82,22 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
             addBaseUnitWindows.ShowDialog();
         }
 
-        private void DeleteProduct(object param)
+        private async Task DeleteProduct(object param)
         {
+            MessageBoxResult result = MessageBox.Show(
+                "Вы уверенны что хотите удалить запись?",
+                "Подтверждение",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                var baseUnit = await _profitDbRepository.BaseUnitRepository.FirstOfDefaultAsync(x => x.Id == SelectedBaseUnit.Id);
+                if (baseUnit != null)
+                {
+                    await _profitDbRepository.BaseUnitRepository.DeleteAsync(baseUnit);
+                    BaseUnits.Remove(SelectedBaseUnit);
+                }
+            }
         }
 
         private void EditProduct(object param)
