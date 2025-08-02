@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <AssemblyVersion>1.0.1.76</AssemblyVersion>
-    <FileVersion>1.0.1.76</FileVersion>
+    <AssemblyVersion>1.0.1.92</AssemblyVersion>
+    <FileVersion>1.0.1.92</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +37,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProfitFoot.DAL\ProfitFood.DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Новая папка\" />
   </ItemGroup>
 
 </Project>

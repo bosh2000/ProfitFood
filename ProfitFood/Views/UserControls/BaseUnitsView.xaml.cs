@@ -17,13 +17,13 @@ using System.Windows.Shapes;
 namespace ProfitFood.UI.Views.UserControls
 {
     /// <summary>
-    /// Логика взаимодействия для ProductsView.xaml
+    /// Логика взаимодействия для BaseUnitView.xaml
     /// </summary>
-    public partial class ProductsView : UserControl
+    public partial class BaseUnitsView : UserControl
     {
-        public ProductsView(ProductTabViewModel productTabViewModel)
+        public BaseUnitsView(BaseUnitTabViewModel vm)
         {
-            DataContext = productTabViewModel;
+            this.DataContext = vm;
             InitializeComponent();
         }
     }

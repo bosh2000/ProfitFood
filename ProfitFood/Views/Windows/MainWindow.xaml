@@ -40,17 +40,22 @@
                     <MenuItem
                         Command="{Binding OpenTabCommand}"
                         CommandParameter="WarehouseUnit"
-                        Header="Складская" />
+                        Header="Складская единица измерения" />
                     <MenuItem
                         Command="{Binding OpenTabCommand}"
                         CommandParameter="AccountingUnits"
-                        Header="Учетная" />
+                        Header="Учетная единица измерения" />
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Помощь">
                 <MenuItem Header="О программе" />
             </MenuItem>
         </Menu>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock>StatusBar</TextBlock>
+            </StatusBarItem>
+        </StatusBar>
         <TabControl ItemsSource="{Binding TabItems}" SelectedItem="{Binding SelectedTab}">
             <TabControl.ItemTemplate>
                 <DataTemplate>

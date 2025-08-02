@@ -12,12 +12,14 @@ namespace ProfitFood.UI.ViewModels
 {
     public class TabItemViewModel : ViewModel
     {
+        public string Id { get; set; }
         public string Header { get; }
         public object Content { get; }
         public ICommand CloseTabCommand { get; }
 
-        public TabItemViewModel(string header, object content, Action<TabItemViewModel> closeCommand)
+        public TabItemViewModel(string id, string header, object content, Action<TabItemViewModel> closeCommand)
         {
+            this.Id = id;
             this.Header = header;
             this.Content = content;
             this.CloseTabCommand = new LambdaCommand(

@@ -5,11 +5,42 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ProfitFood.UI.Views.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:ProfitFood.UI.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ProductTabViewModel}"
     mc:Ignorable="d">
     <Grid>
-        <TextBlock
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Text="Список продуктов" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Для панели кнопок -->
+            <RowDefinition Height="*" />
+            <!-- Для таблицы -->
+        </Grid.RowDefinitions>
+
+        <!-- Панель инструментов -->
+        <DockPanel Grid.Row="0" LastChildFill="True" Margin="5">
+            <Button Content="Добавить" Width="80" Margin="0,0,5,0" Command="{Binding AddProductCommand}" />
+            <Button Content="Редактировать" Width="80" Margin="0,0,5,0" Command="{Binding EditProductCommand}" />
+            <Button Content="Удалить" Width="80" Command="{Binding DeleteProductCommand}" />
+            <TextBox Text="{Binding SearchProduct}" Margin="5,0,5,0" />
+        </DockPanel>
+
+        <!-- Табличная часть -->
+        <DataGrid
+            Grid.Row="1"
+            AutoGenerateColumns="False"
+            ItemsSource="{Binding Products}"
+            SelectedItem="{Binding SelectedProduct}"
+            IsReadOnly="True"
+            Margin="5">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto" />
+                <DataGridTextColumn Header="Наименование" Binding="{Binding Name}" Width="*" />
+                <DataGridTextColumn Header="Тип" Binding="{Binding Description}" Width="*" />
+                <DataGridTextColumn Header="Ед. измерения" Binding="{Binding FullName}" Width="*" />
+                <DataGridTextColumn Header="Ед. измерения" Binding="{Binding BaseUnitStorage}" Width="*" />
+                <DataGridTextColumn Header="Ед. измерения" Binding="{Binding Group}" Width="*" />
+                <DataGridTextColumn Header="Ед. измерения" Binding="{Binding BaseUnit}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

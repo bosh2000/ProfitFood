@@ -54,14 +54,15 @@ namespace ProfitFood.UI.ViewModels
         {
             if (param is not string tabType)
                 return;
-            var existingTab = TabItems.FirstOrDefault(x => x.Header == tabType);
+            var existingTab = TabItems.FirstOrDefault(x => x.Id == tabType);
             if (existingTab != null)
             {
                 SelectedTab = existingTab;
                 return;
             }
             var content = GetContentForTab(tabType);
-            var newTab = new TabItemViewModel(tabType, content, CloseTab);
+            var tabHeader = GetTabHeaderByType(tabType);
+            var newTab = new TabItemViewModel(tabType, tabHeader, content, CloseTab);
             TabItems.Add(newTab);
             SelectedTab = newTab;
         }
@@ -75,15 +76,34 @@ namespace ProfitFood.UI.ViewModels
                     TabItems.Remove(tabItemViewModel);
         }
 
+        private string GetTabHeaderByType(string tabType)
+        {
+            return tabType switch
+            {
+                "Products" => "Продукты",
+                "TypeProduct" => "Тип продуктов",
+                "BaseUnit" => "Базовая единица измерения",
+                "WarehouseUnit" => "Складская единица измерения",
+                "AccountingUnits" => "Учетная единица измерения",
+                _ => "Unknow tabtype"
+            };
+        }
+
         private object GetContentForTab(string tabName)
         {
-            return tabName switch
+            switch (tabName)
             {
-                "Products" => new ProductsView(),
-                //  "ProductTypes" => new ProductTypesView(),
-                //  "BaseUnits" => new BaseUnitsView(),
-                _ => new TextBlock { Text = $"Контент для {tabName}" }
-            };
+                case "Products":
+                    var productVm = new ProductTabViewModel(_profitDbRepository);
+                    return new ProductsView(productVm);
+
+                case "BaseUnit":
+                    var baseUnitVm = new BaseUnitTabViewModel(_profitDbRepository);
+                    return new BaseUnitsView(baseUnitVm);
+
+                default:
+                    return new TextBlock { Text = $"Контент для {tabName}" };
+            }
         }
     }
 }
