@@ -1,4 +1,6 @@
-﻿using ProfitFood.DAL.Repository.Interfaces;
+﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
+using ProfitFood.DAL.Repository.Interfaces;
 using ProfitFood.UI.Infrastructure.Commands;
 using ProfitFood.UI.ViewModels.Base;
 using ProfitFood.UI.ViewModels.BaseUnitViewModels;
@@ -18,7 +20,8 @@ namespace ProfitFood.UI.ViewModels
     public class MainWindowViewModel : ViewModel
     {
         public ObservableCollection<TabItemViewModel> TabItems { get; set; } = new();
-
+        private readonly IProfitDbRepository _profitDbRepository;
+        private readonly IServiceProvider _serviceProvider;
         private TabItemViewModel _selectedTab;
 
         public TabItemViewModel SelectedTab
@@ -37,11 +40,10 @@ namespace ProfitFood.UI.ViewModels
         public string TitleWindows
         { get; } = "Profit Питание";
 
-        private readonly IProfitDbRepository _profitDbRepository;
-
-        public MainWindowViewModel(IProfitDbRepository repository)
+        public MainWindowViewModel(IServiceProvider serviceProvider)
         {
-            _profitDbRepository = repository;
+            _serviceProvider = serviceProvider;
+            _profitDbRepository = _serviceProvider.GetRequiredService<IProfitDbRepository>();// repository;
             OpenTabCommand = new LambdaCommand(
                 Execute: OpenNewTab,
                 CanExecute: _ => true
@@ -99,7 +101,8 @@ namespace ProfitFood.UI.ViewModels
                     return new ProductsView(productVm);
 
                 case "BaseUnit":
-                    var baseUnitVm = new BaseUnitTabViewModel(_profitDbRepository);
+                    var baseUnitVm = new BaseUnitTabViewModel(_profitDbRepository
+                        , _serviceProvider.GetRequiredService<IMapper>());
                     return new BaseUnitsView(baseUnitVm);
 
                 default:

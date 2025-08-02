@@ -1,4 +1,5 @@
-﻿using ProfitFood.DAL.Repository.Interfaces;
+﻿using AutoMapper;
+using ProfitFood.DAL.Repository.Interfaces;
 using ProfitFood.Model.DBModel;
 using ProfitFood.Model.Infrastructure;
 using ProfitFood.UI.Infrastructure.Commands;
@@ -17,6 +18,7 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
     public class BaseUnitTabViewModel : ViewModel
     {
         private readonly IProfitDbRepository _profitDbRepository;
+        private readonly IMapper _mapper;
 
         public ObservableCollection<BaseUnitItemView> BaseUnits { get; } = new ObservableCollection<BaseUnitItemView>();
         private BaseUnitItemView _selectedBaseUnit;
@@ -36,9 +38,10 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
         public ICommand EditProductCommand { get; }
         public string SearchBaseUnit { get; set; }
 
-        public BaseUnitTabViewModel(IProfitDbRepository repository)
+        public BaseUnitTabViewModel(IProfitDbRepository repository, IMapper mapper)
         {
             _profitDbRepository = repository;
+            _mapper = mapper;
             AddProductCommand = new LambdaCommand(AddBaseUnitItem);
             DeleteProductCommand = new LambdaCommandAsync(DeleteBaseUnitItem, CanEditDelete);
             EditProductCommand = new LambdaCommand(EditBaseUnitItem, CanEditDelete);
@@ -51,7 +54,7 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
 
             var units = await _profitDbRepository.BaseUnitRepository.ToListAsync();
             foreach (var unit in units)
-                BaseUnits.Add(new BaseUnitItemView { Id = unit.Id, Name = unit.Name });
+                BaseUnits.Add(_mapper.Map<BaseUnitItemView>(unit));
         }
 
         private async void AddBaseUnitItem(object param)
@@ -67,12 +70,7 @@ namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
                     return;
                 }
                 var baseUnitCreated = await _profitDbRepository.BaseUnitRepository.CreateASync(result.Value);
-                var baseUnitView =
-                                    new BaseUnitItemView
-                                    {
-                                        Id = baseUnitCreated.Id,
-                                        Name = baseUnitCreated.Name
-                                    };
+                var baseUnitView = _mapper.Map<BaseUnitItemView>(baseUnitCreated);
                 BaseUnits.Add(baseUnitView);
                 SelectedBaseUnit = baseUnitView;
                 addBaseUnitWindows.Close();
