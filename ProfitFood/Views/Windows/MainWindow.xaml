@@ -23,11 +23,13 @@
                     </MenuItem.Command>
                 </MenuItem>
             </MenuItem>
+            <MenuItem Header="Меню" />
             <MenuItem Header="Справочники">
                 <MenuItem
                     Command="{Binding OpenTabCommand}"
                     CommandParameter="Products"
                     Header="Продукты" />
+                <MenuItem Header="Технологические карты" />
                 <MenuItem
                     Command="{Binding OpenTabCommand}"
                     CommandParameter="TypeProduct"
