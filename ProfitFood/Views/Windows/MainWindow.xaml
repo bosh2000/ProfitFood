@@ -48,6 +48,7 @@
                         CommandParameter="AccountingUnits"
                         Header="Учетная единица измерения" />
                 </MenuItem>
+                <MenuItem Header="Учереждение" />
             </MenuItem>
             <MenuItem Header="Помощь">
                 <MenuItem Header="О программе" />
