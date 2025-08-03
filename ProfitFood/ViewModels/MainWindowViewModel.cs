@@ -3,7 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using ProfitFood.DAL.Repository.Interfaces;
 using ProfitFood.UI.Infrastructure.Commands;
 using ProfitFood.UI.ViewModels.Base;
+using ProfitFood.UI.ViewModels.BaseUnitStorageViewModels;
 using ProfitFood.UI.ViewModels.BaseUnitViewModels;
+using ProfitFood.UI.Views.BaseUnitStorage;
 using ProfitFood.UI.Views.UserControls;
 using System;
 using System.Collections.Generic;
@@ -104,6 +106,11 @@ namespace ProfitFood.UI.ViewModels
                     var baseUnitVm = new BaseUnitTabViewModel(_profitDbRepository
                         , _serviceProvider.GetRequiredService<IMapper>());
                     return new BaseUnitsView(baseUnitVm);
+
+                case "WarehouseUnit":
+                    var baseUnitStorageVm = new BaseUnitStorageTabViewModel(_profitDbRepository
+                        , _serviceProvider.GetRequiredService<IMapper>());
+                    return new BaseUnitsStorageView(baseUnitStorageVm);
 
                 default:
                     return new TextBlock { Text = $"Контент для {tabName}" };

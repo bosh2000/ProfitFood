@@ -1,0 +1,74 @@
+﻿<UserControl
+    x:Class="ProfitFood.UI.Views.BaseUnitStorage.BaseUnitsStorageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:baseunitviewmodels="clr-namespace:ProfitFood.UI.ViewModels.BaseUnitStorageViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProfitFood.UI.Views.BaseUnitStorage"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:ProfitFood.UI.ViewModels"
+    d:DataContext="{d:DesignInstance Type=baseunitviewmodels:BaseUnitStorageTabViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!--  Для панели кнопок  -->
+            <RowDefinition Height="*" />
+            <!--  Для таблицы  -->
+        </Grid.RowDefinitions>
+
+        <!--  Панель инструментов  -->
+        <DockPanel
+            Grid.Row="0"
+            Margin="5"
+            LastChildFill="True">
+            <Button
+                Width="80"
+                Margin="0,0,5,0"
+                Command="{Binding AddBaseUnitStorageCommand}"
+                Content="Добавить" />
+            <Button
+                Width="80"
+                Margin="0,0,5,0"
+                Command="{Binding EditBaseUnitStorageCommand}"
+                Content="Редактировать" />
+            <Button
+                Width="80"
+                Command="{Binding DeleteBaseUnitStorageCommand}"
+                Content="Удалить" />
+            <TextBox Margin="5,0,5,0" Text="{Binding SearchBaseUnitStorage}" />
+        </DockPanel>
+
+        <!--  Табличная часть  -->
+        <DataGrid
+            Grid.Row="1"
+            Margin="5"
+            AutoGenerateColumns="False"
+            BorderBrush="Gray"
+            HeadersVisibility="Column"
+            IsReadOnly="True"
+            ItemsSource="{Binding BaseUnitsStorage}"
+            SelectedItem="{Binding SelectedBaseUnitStorage}">
+
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="BorderBrush" Value="LightGray" />
+                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                </Style>
+            </DataGrid.Resources>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="3*"
+                    Binding="{Binding Name}"
+                    Header="Наименование" />
+                <DataGridTextColumn
+                    Width="7*"
+                    Binding="{Binding Description}"
+                    Header="Описание" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

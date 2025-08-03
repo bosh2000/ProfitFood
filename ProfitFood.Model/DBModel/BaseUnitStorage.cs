@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace ProfitFood.Model.DBModel
 {
+    /// <summary>
+    /// Базовая единица хранения
+    /// </summary>
     public class BaseUnitStorage : EntityBase
     {
         private BaseUnitStorage(string name, string Description)
@@ -32,6 +35,12 @@ namespace ProfitFood.Model.DBModel
             if (errors.Any())
                 return OperationResult.Failure(errors);
             this.Name = newName;
+            return OperationResult.Success();
+        }
+
+        public OperationResult SetDescription(string newDescription)
+        {
+            this.Description = newDescription;
             return OperationResult.Success();
         }
 
