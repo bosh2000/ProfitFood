@@ -34,6 +34,15 @@ namespace ProfitFood.UI.Mappings
                 .ConstructUsing(src => BaseUnitStorage.Create(src.Name, src.Description).Value)
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Products, opt => opt.Ignore());
+
+            CreateMap<ProductGroup, ProductGroupItemView>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
+            CreateMap<ProductGroupItemView, ProductGroup>()
+                .ConstructUsing(src => ProductGroup.Create(src.Name, src.Description).Value)
+                .ForMember(desc => desc.Id, opt => opt.Ignore())
+                .ForMember(desc => desc.Products, opt => opt.Ignore());
         }
     }
 }

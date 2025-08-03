@@ -39,6 +39,12 @@ namespace ProfitFood.Model.DBModel
             return OperationResult.Success();
         }
 
+        public OperationResult SetDescription(string newDesc)
+        {
+            Description = newDesc;
+            return OperationResult.Success();
+        }
+
         private static List<Error> CheckName(string name)
         {
             var error = new List<Error>();
@@ -52,7 +58,7 @@ namespace ProfitFood.Model.DBModel
             return error;
         }
 
-        private static OperationResult<ProductGroup> Create(string? name, string? desc)
+        public static OperationResult<ProductGroup> Create(string? name, string? desc)
         {
             var error = CheckName(name);
 

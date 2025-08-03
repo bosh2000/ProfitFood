@@ -5,7 +5,9 @@ using ProfitFood.UI.Infrastructure.Commands;
 using ProfitFood.UI.ViewModels.Base;
 using ProfitFood.UI.ViewModels.BaseUnitStorageViewModels;
 using ProfitFood.UI.ViewModels.BaseUnitViewModels;
+using ProfitFood.UI.ViewModels.ProductGroupViewModels;
 using ProfitFood.UI.Views.BaseUnitStorage;
+using ProfitFood.UI.Views.ProductGroup;
 using ProfitFood.UI.Views.UserControls;
 using System;
 using System.Collections.Generic;
@@ -111,6 +113,11 @@ namespace ProfitFood.UI.ViewModels
                     var baseUnitStorageVm = new BaseUnitStorageTabViewModel(_profitDbRepository
                         , _serviceProvider.GetRequiredService<IMapper>());
                     return new BaseUnitsStorageView(baseUnitStorageVm);
+
+                case "TypeProduct":
+                    var productGroupVm = new ProductGroupTabViewModel(_profitDbRepository
+                        , _serviceProvider.GetRequiredService<IMapper>());
+                    return new ProductGroupsView(productGroupVm);
 
                 default:
                     return new TextBlock { Text = $"Контент для {tabName}" };
