@@ -1,7 +1,8 @@
 ﻿using ProfitFood.UI.ViewModels;
+using System;
 using System.Windows;
 
-namespace ProfitFood
+namespace ProfitFood.UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -11,7 +12,7 @@ namespace ProfitFood
         public MainWindow(MainWindowViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = viewModel;
+            DataContext = new MainWindowViewModel();
         }
     }
 }

@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyVersion>1.0.1.50</AssemblyVersion>
+    <FileVersion>1.0.1.50</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProfitFood.Services\ProfitFood.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities\SystemEntities\" />
+    <Folder Include="Entities\References\" />
+    <Folder Include="Entities\Recipes\" />
+    <Folder Include="Entities\Menus\" />
+    <Folder Include="Entities\Stocks\" />
+    <Folder Include="Entities\Documents\" />
+  </ItemGroup>
+
+</Project>

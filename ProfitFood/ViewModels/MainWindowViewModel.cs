@@ -1,127 +1,85 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
-using ProfitFood.DAL.Repository.Interfaces;
-using ProfitFood.UI.Infrastructure.Commands;
-using ProfitFood.UI.ViewModels.Base;
-using ProfitFood.UI.ViewModels.BaseUnitStorageViewModels;
-using ProfitFood.UI.ViewModels.BaseUnitViewModels;
-using ProfitFood.UI.ViewModels.ProductGroupViewModels;
-using ProfitFood.UI.Views.BaseUnitStorage;
-using ProfitFood.UI.Views.ProductGroup;
-using ProfitFood.UI.Views.UserControls;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace ProfitFood.UI.ViewModels
 {
-    public class MainWindowViewModel : ViewModel
+    public sealed class MainWindowViewModel : ViewModelBase
     {
-        public ObservableCollection<TabItemViewModel> TabItems { get; set; } = new();
-        private readonly IProfitDbRepository _profitDbRepository;
-        private readonly IServiceProvider _serviceProvider;
-        private TabItemViewModel _selectedTab;
+        private ViewModelBase? _currentViewModel;
+        private string _statusText = "Готово";
 
-        public TabItemViewModel SelectedTab
+        public MainWindowViewModel()
         {
-            get => _selectedTab;
-            set
-            {
-                _selectedTab = value;
-                OnPropertyChanged();
-            }
+            OpenDashboardCommand = new RelayCommand(_ => OpenDashboard());
+            OpenDailyMenusCommand = new RelayCommand(_ => OpenDailyMenus());
+            OpenDailyMenuEditorCommand = new RelayCommand(_ => OpenDailyMenuEditor());
+            OpenRecipeCardsCommand = new RelayCommand(_ => OpenRecipeCards());
+            OpenStockCommand = new RelayCommand(_ => OpenStock());
+            OpenDocumentsCommand = new RelayCommand(_ => OpenDocuments());
+            OpenReferencesCommand = new RelayCommand(_ => OpenReferences());
+
+            OpenDashboard();
         }
 
-        public ICommand OpenTabCommand { get; }
-        public ICommand CloseTabCommand { get; }
-
-        public string TitleWindows
-        { get; } = "Profit Питание";
-
-        public MainWindowViewModel(IServiceProvider serviceProvider)
+        public ViewModelBase? CurrentViewModel
         {
-            _serviceProvider = serviceProvider;
-            _profitDbRepository = _serviceProvider.GetRequiredService<IProfitDbRepository>();// repository;
-            OpenTabCommand = new LambdaCommand(
-                Execute: OpenNewTab,
-                CanExecute: _ => true
-                );
-            CloseTabCommand = new LambdaCommand(
-                Execute: CloseTab,
-                CanExecute: _ => true);
+            get => _currentViewModel;
+            set => SetProperty(ref _currentViewModel, value);
         }
 
-        public void OpenNewTab(object param)
+        public string StatusText
         {
-            if (param is not string tabType)
-                return;
-            var existingTab = TabItems.FirstOrDefault(x => x.Id == tabType);
-            if (existingTab != null)
-            {
-                SelectedTab = existingTab;
-                return;
-            }
-            var content = GetContentForTab(tabType);
-            var tabHeader = GetTabHeaderByType(tabType);
-            var newTab = new TabItemViewModel(tabType, tabHeader, content, CloseTab);
-            TabItems.Add(newTab);
-            SelectedTab = newTab;
+            get => _statusText;
+            set => SetProperty(ref _statusText, value);
         }
 
-        private void CloseTab(object param)
+        public ICommand OpenDashboardCommand { get; }
+        public ICommand OpenDailyMenusCommand { get; }
+        public ICommand OpenDailyMenuEditorCommand { get; }
+        public ICommand OpenRecipeCardsCommand { get; }
+        public ICommand OpenStockCommand { get; }
+        public ICommand OpenDocumentsCommand { get; }
+        public ICommand OpenReferencesCommand { get; }
+
+        private void OpenDashboard()
         {
-            if (param is null)
-            { return; }
-            if (param is TabItemViewModel tabItemViewModel)
-                if (tabItemViewModel != null)
-                    TabItems.Remove(tabItemViewModel);
+            CurrentViewModel = new DashboardViewModel();
+            StatusText = "Открыта главная страница";
         }
 
-        private string GetTabHeaderByType(string tabType)
+        private void OpenDailyMenus()
         {
-            return tabType switch
-            {
-                "Products" => "Продукты",
-                "TypeProduct" => "Тип продуктов",
-                "BaseUnit" => "Базовая единица измерения",
-                "WarehouseUnit" => "Складская единица измерения",
-                "AccountingUnits" => "Учетная единица измерения",
-                _ => "Unknow tabtype"
-            };
+            CurrentViewModel = new DailyMenuListViewModel();
+            StatusText = "Открыт список меню";
         }
 
-        private object GetContentForTab(string tabName)
+        private void OpenDailyMenuEditor()
         {
-            switch (tabName)
-            {
-                case "Products":
-                    var productVm = new ProductTabViewModel(_profitDbRepository);
-                    return new ProductsView(productVm);
+            CurrentViewModel = new DailyMenuEditorViewModel();
+            StatusText = "Открыт редактор меню";
+        }
 
-                case "BaseUnit":
-                    var baseUnitVm = new BaseUnitTabViewModel(_profitDbRepository
-                        , _serviceProvider.GetRequiredService<IMapper>());
-                    return new BaseUnitsView(baseUnitVm);
+        private void OpenRecipeCards()
+        {
+            CurrentViewModel = new RecipeCardsViewModel();
+            StatusText = "Открыт раздел техкарт";
+        }
 
-                case "WarehouseUnit":
-                    var baseUnitStorageVm = new BaseUnitStorageTabViewModel(_profitDbRepository
-                        , _serviceProvider.GetRequiredService<IMapper>());
-                    return new BaseUnitsStorageView(baseUnitStorageVm);
+        private void OpenStock()
+        {
+            CurrentViewModel = new StockViewModel();
+            StatusText = "Открыт склад";
+        }
 
-                case "TypeProduct":
-                    var productGroupVm = new ProductGroupTabViewModel(_profitDbRepository
-                        , _serviceProvider.GetRequiredService<IMapper>());
-                    return new ProductGroupsView(productGroupVm);
+        private void OpenDocuments()
+        {
+            CurrentViewModel = new DocumentsViewModel();
+            StatusText = "Открыт журнал документов";
+        }
 
-                default:
-                    return new TextBlock { Text = $"Контент для {tabName}" };
-            }
+        private void OpenReferences()
+        {
+            CurrentViewModel = new ReferencesViewModel();
+            StatusText = "Открыт раздел справочников";
         }
     }
 }

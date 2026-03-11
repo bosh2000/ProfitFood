@@ -1,7 +1,7 @@
-﻿using ProfitFood.UI.Infrastructure.Commands.Base;
+﻿using ProfitFood.UI.Commands.Base;
 using System.Windows;
 
-namespace ProfitFood.UI.Infrastructure.Commands
+namespace ProfitFood.UI.Commands
 {
     internal class CloseApplicationCommand : Command
     {

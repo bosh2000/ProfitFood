@@ -1,6 +1,6 @@
-﻿using ProfitFood.UI.Infrastructure.Commands.Base;
+﻿using ProfitFood.UI.Commands.Base;
 
-namespace ProfitFood.UI.Infrastructure.Commands
+namespace ProfitFood.UI.Commands
 {
     internal class LambdaCommand : Command
     {

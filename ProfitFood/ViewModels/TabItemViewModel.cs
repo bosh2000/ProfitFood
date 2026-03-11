@@ -1,4 +1,4 @@
-﻿using ProfitFood.UI.Infrastructure.Commands;
+﻿using ProfitFood.UI.Commands;
 using ProfitFood.UI.ViewModels.Base;
 using System.Windows.Input;
 

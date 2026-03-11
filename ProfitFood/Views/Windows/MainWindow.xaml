@@ -1,84 +1,144 @@
 ﻿<Window
-    x:Class="ProfitFood.MainWindow"
+    x:Class="ProfitFood.UI.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:cmd="clr-namespace:ProfitFood.UI.Infrastructure.Commands"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:fa="http://schemas.fontawesome.com/icons/"
-    xmlns:local="clr-namespace:ProfitFood"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:ProfitFood.UI.Views"
     xmlns:vm="clr-namespace:ProfitFood.UI.ViewModels"
-    Title="{Binding Path=TitleWindows}"
-    Width="800"
-    Height="450"
-    Icon="/Resource/Images/main.ico"
+    Title="ProfitFood"
+    Width="1400"
+    Height="900"
+    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Файл">
-                <MenuItem Header="Выход">
-                    <MenuItem.Command>
-                        <cmd:CloseApplicationCommand />
-                    </MenuItem.Command>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Меню" />
-            <MenuItem Header="Справочники">
-                <MenuItem
-                    Command="{Binding OpenTabCommand}"
-                    CommandParameter="Products"
-                    Header="Продукты" />
-                <MenuItem Header="Технологические карты" />
-                <MenuItem
-                    Command="{Binding OpenTabCommand}"
-                    CommandParameter="TypeProduct"
-                    Header="Тип продуктов" />
-                <MenuItem Header="Единицы измерения">
-                    <MenuItem
-                        Command="{Binding OpenTabCommand}"
-                        CommandParameter="BaseUnit"
-                        Header="Базовая единица измерения" />
-                    <MenuItem
-                        Command="{Binding OpenTabCommand}"
-                        CommandParameter="WarehouseUnit"
-                        Header="Складская единица измерения" />
-                    <MenuItem
-                        Command="{Binding OpenTabCommand}"
-                        CommandParameter="AccountingUnits"
-                        Header="Учетная единица измерения" />
-                </MenuItem>
-                <MenuItem Header="Учереждение" />
-            </MenuItem>
-            <MenuItem Header="Помощь">
-                <MenuItem Header="О программе" />
-            </MenuItem>
-        </Menu>
-        <StatusBar DockPanel.Dock="Bottom">
+    <Window.Resources>
+        <!--  Какой View показывать для какой ViewModel  -->
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <views:DashboardView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:DailyMenuEditorViewModel}">
+            <views:DailyMenuEditorView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:RecipeCardsViewModel}">
+            <views:RecipeCardsView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:StockViewModel}">
+            <views:StockView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:DocumentsViewModel}">
+            <views:DocumentsView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:ReferencesViewModel}">
+            <views:ReferencesView />
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid Background="#FFF5F7FA">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Верхняя панель  -->
+        <Border
+            Grid.Row="0"
+            Background="White"
+            BorderBrush="#D9E2EC"
+            BorderThickness="0,0,0,1">
+            <DockPanel Margin="16,12">
+                <TextBlock
+                    DockPanel.Dock="Left"
+                    FontSize="22"
+                    FontWeight="SemiBold"
+                    Foreground="#102A43"
+                    Text="ProfitFood — учет питания МДОУ" />
+
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button
+                        Margin="0,0,8,0"
+                        Command="{Binding OpenDailyMenuEditorCommand}"
+                        Content="Создать меню" />
+                    <Button
+                        Margin="0,0,8,0"
+                        Command="{Binding OpenDailyMenusCommand}"
+                        Content="Открыть список меню" />
+                    <Button Command="{Binding OpenDocumentsCommand}" Content="Документы" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!--  Основная область  -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Боковое меню  -->
+            <Border
+                Grid.Column="0"
+                Background="White"
+                BorderBrush="#D9E2EC"
+                BorderThickness="0,0,1,0">
+                <StackPanel Margin="12">
+                    <TextBlock
+                        Margin="8,8,8,12"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="#334E68"
+                        Text="Разделы" />
+
+                    <Button
+                        Margin="0,0,0,8"
+                        Command="{Binding OpenDashboardCommand}"
+                        Content="Главная" />
+
+                    <Button
+                        Margin="0,0,0,8"
+                        Command="{Binding OpenDailyMenusCommand}"
+                        Content="Меню" />
+
+                    <Button
+                        Margin="0,0,0,8"
+                        Command="{Binding OpenRecipeCardsCommand}"
+                        Content="Техкарты" />
+
+                    <Button
+                        Margin="0,0,0,8"
+                        Command="{Binding OpenStockCommand}"
+                        Content="Склад" />
+
+                    <Button
+                        Margin="0,0,0,8"
+                        Command="{Binding OpenDocumentsCommand}"
+                        Content="Документы" />
+
+                    <Button
+                        Margin="0,0,0,8"
+                        Command="{Binding OpenReferencesCommand}"
+                        Content="Справочники" />
+                </StackPanel>
+            </Border>
+
+            <!--  Здесь будет меняться представление  -->
+            <ContentControl
+                Grid.Column="1"
+                Margin="12"
+                Content="{Binding CurrentViewModel}" />
+        </Grid>
+
+        <!--  Строка состояния  -->
+        <StatusBar Grid.Row="2">
             <StatusBarItem>
-                <TextBlock>StatusBar</TextBlock>
+                <TextBlock Text="{Binding StatusText}" />
             </StatusBarItem>
         </StatusBar>
-        <TabControl ItemsSource="{Binding TabItems}" SelectedItem="{Binding SelectedTab}">
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Header}" />
-                        <Button
-                            Margin="5,0,0,0"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Command="{Binding CloseTabCommand}"
-                            CommandParameter="{Binding Header}"
-                            Content="✕" />
-                    </StackPanel>
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-            <TabControl.ContentTemplate>
-                <DataTemplate>
-                    <ContentControl Content="{Binding Content}" />
-                </DataTemplate>
-            </TabControl.ContentTemplate>
-        </TabControl>
-    </DockPanel>
+    </Grid>
 </Window>

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyVersion>1.0.1.23</AssemblyVersion>
+    <FileVersion>1.0.1.23</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+    <Folder Include="Dto\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="UseCases\" />
+  </ItemGroup>
+
+</Project>

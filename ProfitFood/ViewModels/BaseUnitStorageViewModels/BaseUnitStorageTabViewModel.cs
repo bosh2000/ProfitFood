@@ -2,7 +2,7 @@
 using ProfitFood.DAL.Repository.Interfaces;
 using ProfitFood.Model.DBModel;
 using ProfitFood.Model.Infrastructure;
-using ProfitFood.UI.Infrastructure.Commands;
+using ProfitFood.UI.Commands;
 using ProfitFood.UI.Models.View;
 using ProfitFood.UI.ViewModels.Base;
 using ProfitFood.UI.Views.BaseUnitStorage;

@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.0.1.45</AssemblyVersion>
-    <FileVersion>1.0.1.45</FileVersion>
+    <AssemblyVersion>1.0.1.57</AssemblyVersion>
+    <FileVersion>1.0.1.57</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProfitFood.Model\ProfitFood.Model.csproj" />
+    <ProjectReference Include="..\ProfitFood.Model\ProfitFood.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Settings\" />
   </ItemGroup>
 
 </Project>

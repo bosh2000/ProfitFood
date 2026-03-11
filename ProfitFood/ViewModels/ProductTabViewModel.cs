@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using ProfitFood.DAL.Repository.Interfaces;
-using ProfitFood.UI.Infrastructure.Commands;
+using ProfitFood.UI.Commands;
 using ProfitFood.UI.Models.View;
 using ProfitFood.UI.ViewModels.Base;
 using System;

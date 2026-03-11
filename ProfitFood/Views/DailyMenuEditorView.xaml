@@ -1,0 +1,742 @@
+﻿<UserControl x:Class="ProfitFood.UI.Views.DailyMenuEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ProfitFood.UI.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="900"
+             d:DesignWidth="1400"
+             d:DataContext="{d:DesignInstance Type=vm:DailyMenuEditorViewModel, IsDesignTimeCreatable=True}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <SolidColorBrush x:Key="PageBackgroundBrush" Color="#FFF5F7FA" />
+        <SolidColorBrush x:Key="PanelBackgroundBrush" Color="White" />
+        <SolidColorBrush x:Key="BorderBrushLight" Color="#D9E2EC" />
+        <SolidColorBrush x:Key="ForegroundPrimary" Color="#102A43" />
+        <SolidColorBrush x:Key="ForegroundSecondary" Color="#486581" />
+
+        <Style x:Key="CardBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource PanelBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushLight}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Padding" Value="14,6" />
+            <Setter Property="Background" Value="#2F6FED" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="#2F6FED" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Opacity" Value="0.92" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Border" Property="Opacity" Value="0.82" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#334E68" />
+            <Setter Property="BorderBrush" Value="#BCCCDC" />
+        </Style>
+
+        <Style x:Key="SmallButtonStyle" TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Padding" Value="12,4" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="BorderBrush" Value="#BCCCDC" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#102A43" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="BorderBrush" Value="#BCCCDC" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#102A43" />
+            <Setter Property="MinHeight" Value="34" />
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="BorderBrush" Value="#BCCCDC" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#102A43" />
+        </Style>
+
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#486581" />
+            <Setter Property="Background" Value="#F0F4F8" />
+            <Setter Property="BorderBrush" Value="#D9E2EC" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="0,0,4,0" />
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#D9E2EC" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="RowBackground" Value="White" />
+            <Setter Property="AlternatingRowBackground" Value="#F8FBFF" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#E6EDF5" />
+            <Setter Property="VerticalGridLinesBrush" Value="#F0F4F8" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="CanUserResizeRows" Value="False" />
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="CanUserDeleteRows" Value="False" />
+            <Setter Property="SelectionMode" Value="Single" />
+            <Setter Property="SelectionUnit" Value="FullRow" />
+            <Setter Property="RowHeight" Value="34" />
+            <Setter Property="ColumnHeaderHeight" Value="38" />
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F0F4F8" />
+            <Setter Property="Foreground" Value="#243B53" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="BorderBrush" Value="#D9E2EC" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="Padding" Value="10,8" />
+        </Style>
+
+        <Style TargetType="DataGridRow">
+            <Setter Property="Foreground" Value="#102A43" />
+            <Setter Property="BorderBrush" Value="#EEF2F6" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#DCEBFF" />
+                    <Setter Property="Foreground" Value="#102A43" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#EEF6FF" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource PageBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Margin="16,16,16,8"
+                Padding="20,16"
+                Style="{StaticResource CardBorderStyle}">
+            <DockPanel LastChildFill="True">
+                <StackPanel Orientation="Vertical" DockPanel.Dock="Left">
+                    <TextBlock Text="Меню на дату"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="#102A43" />
+                    <TextBlock Text="Редактирование ежедневного меню, расчет потребности и формирование документа выдачи"
+                               Margin="0,6,0,0"
+                               FontSize="13"
+                               Foreground="#627D98" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <Button Content="← Назад"
+                            Width="100"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Command="{Binding BackCommand}" />
+                    <Button Content="Сохранить"
+                            Width="110"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding SaveCommand}" />
+                    <Button Content="Рассчитать продукты"
+                            Width="160"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding CalculateProductsCommand}" />
+                    <Button Content="Сформировать требование"
+                            Width="185"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding CreateRequirementCommand}" />
+                    <Button Content="Печать"
+                            Width="100"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Command="{Binding PrintCommand}" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Row="1"
+                Margin="16,0,16,8"
+                Padding="20,16"
+                Style="{StaticResource CardBorderStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                    <TextBlock Text="Дата" FontWeight="SemiBold" Foreground="#334E68" />
+                    <DatePicker SelectedDate="{Binding MenuDate}" Margin="0,6,0,0" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                    <TextBlock Text="Сезон" FontWeight="SemiBold" Foreground="#334E68" />
+                    <ComboBox ItemsSource="{Binding Seasons}"
+                              SelectedItem="{Binding SelectedSeason}"
+                              DisplayMemberPath="Name"
+                              Margin="0,6,0,0" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Margin="0,0,12,0">
+                    <TextBlock Text="Цикличное меню" FontWeight="SemiBold" Foreground="#334E68" />
+                    <ComboBox ItemsSource="{Binding CycleMenus}"
+                              SelectedItem="{Binding SelectedCycleMenu}"
+                              DisplayMemberPath="Name"
+                              Margin="0,6,0,0" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="3" Margin="0,0,12,0">
+                    <TextBlock Text="Статус" FontWeight="SemiBold" Foreground="#334E68" />
+                    <ComboBox ItemsSource="{Binding AvailableStatuses}"
+                              SelectedItem="{Binding SelectedStatus}"
+                              Margin="0,6,0,0" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="4">
+                    <TextBlock Text="Примечание" FontWeight="SemiBold" Foreground="#334E68" />
+                    <TextBox Text="{Binding Notes}" Margin="0,6,0,0" MinHeight="34" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="16,0,16,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Margin="0,0,8,0"
+                    Style="{StaticResource CardBorderStyle}">
+                <TabControl>
+                    <TabItem Header="Общие данные">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <Grid Margin="20">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                                           Text="Общие параметры меню"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Foreground="#102A43" />
+
+                                <Grid Grid.Row="1" Margin="0,16,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                        <TextBlock Text="Источник заполнения" FontWeight="SemiBold" />
+                                        <TextBox Text="{Binding SourceDescription}" Margin="0,6,0,0" IsReadOnly="True" />
+
+                                        <TextBlock Text="Дата создания" Margin="0,14,0,0" FontWeight="SemiBold" />
+                                        <TextBox Text="{Binding CreatedAtText}" Margin="0,6,0,0" IsReadOnly="True" />
+
+                                        <TextBlock Text="Дата изменения" Margin="0,14,0,0" FontWeight="SemiBold" />
+                                        <TextBox Text="{Binding UpdatedAtText}" Margin="0,6,0,0" IsReadOnly="True" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Комментарий к меню" FontWeight="SemiBold" />
+                                        <TextBox Text="{Binding Notes}"
+                                                 Margin="0,6,0,0"
+                                                 Height="120"
+                                                 AcceptsReturn="True"
+                                                 TextWrapping="Wrap"
+                                                 VerticalScrollBarVisibility="Auto" />
+
+                                        <WrapPanel Margin="0,14,0,0">
+                                            <Button Content="Заполнить из цикличного меню"
+                                                    Margin="0,0,8,0"
+                                                    Style="{StaticResource SecondaryButtonStyle}"
+                                                    Command="{Binding FillFromCycleMenuCommand}" />
+                                            <Button Content="Копировать меню предыдущего дня"
+                                                    Style="{StaticResource SecondaryButtonStyle}"
+                                                    Command="{Binding CopyPreviousMenuCommand}" />
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Border Grid.Row="2"
+                                        Margin="0,20,0,0"
+                                        Padding="14"
+                                        CornerRadius="8"
+                                        Background="#F0F4F8"
+                                        BorderBrush="#D9E2EC"
+                                        BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="Памятка"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#243B53" />
+                                        <TextBlock Text="После изменения посещаемости или состава блюд необходимо выполнить перерасчет продуктов."
+                                                   Margin="0,8,0,0"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="#486581" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <TabItem Header="Посещаемость">
+                        <Grid Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" LastChildFill="False">
+                                <TextBlock Text="Фактическое количество питающихся"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Foreground="#102A43"
+                                           DockPanel.Dock="Left" />
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                    <Button Content="Заполнить по списочному составу"
+                                            Margin="0,0,8,0"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Command="{Binding FillAttendanceByPlanCommand}" />
+                                    <Button Content="Пересчитать итоги"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Command="{Binding RecalculateTotalsCommand}" />
+                                </StackPanel>
+                            </DockPanel>
+
+                            <DataGrid Grid.Row="1"
+                                      Margin="0,16,0,16"
+                                      AutoGenerateColumns="False"
+                                      ItemsSource="{Binding Attendances}"
+                                      IsReadOnly="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Группа"
+                                                        Binding="{Binding ChildGroupName}"
+                                                        Width="2*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Возраст"
+                                                        Binding="{Binding AgeGroupName}"
+                                                        Width="1.5*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="План"
+                                                        Binding="{Binding PlannedCount}"
+                                                        Width="*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Факт"
+                                                        Binding="{Binding ActualCount, UpdateSourceTrigger=PropertyChanged}"
+                                                        Width="*" />
+                                    <DataGridTextColumn Header="Комментарий"
+                                                        Binding="{Binding Comment}"
+                                                        Width="2*" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Border Grid.Row="2"
+                                    Padding="12"
+                                    CornerRadius="8"
+                                    Background="#F0F4F8"
+                                    BorderBrush="#D9E2EC"
+                                    BorderThickness="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="Итого детей на питание"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center"
+                                               Foreground="#243B53" />
+
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding TotalChildrenCount}"
+                                               FontSize="18"
+                                               FontWeight="Bold"
+                                               Foreground="#102A43"
+                                               VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Блюда">
+                        <Grid Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" LastChildFill="False">
+                                <TextBlock Text="Состав меню по приемам пищи"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Foreground="#102A43"
+                                           DockPanel.Dock="Left" />
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                    <Button Content="Добавить блюдо"
+                                            Margin="0,0,8,0"
+                                            Style="{StaticResource SmallButtonStyle}"
+                                            Command="{Binding AddDishCommand}" />
+                                    <Button Content="Заменить блюдо"
+                                            Margin="0,0,8,0"
+                                            Style="{StaticResource SmallButtonStyle}"
+                                            Command="{Binding ReplaceDishCommand}" />
+                                    <Button Content="Удалить блюдо"
+                                            Style="{StaticResource SmallButtonStyle}"
+                                            Command="{Binding RemoveDishCommand}" />
+                                </StackPanel>
+                            </DockPanel>
+
+                            <DataGrid Grid.Row="1"
+                                      Margin="0,16,0,0"
+                                      AutoGenerateColumns="False"
+                                      ItemsSource="{Binding Dishes}"
+                                      SelectedItem="{Binding SelectedDishItem}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Прием пищи"
+                                                        Binding="{Binding MealTypeName}"
+                                                        Width="1.4*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="№"
+                                                        Binding="{Binding SortOrder}"
+                                                        Width="0.5*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Блюдо"
+                                                        Binding="{Binding DishName}"
+                                                        Width="2.6*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Техкарта"
+                                                        Binding="{Binding RecipeCardNumber}"
+                                                        Width="1.2*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Выход"
+                                                        Binding="{Binding OutputText}"
+                                                        Width="1*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Примечание"
+                                                        Binding="{Binding Notes}"
+                                                        Width="2*" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Продукты">
+                        <Grid Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" LastChildFill="False">
+                                <TextBlock Text="Результат расчета потребности в продуктах"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Foreground="#102A43"
+                                           DockPanel.Dock="Left" />
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                    <Button Content="Рассчитать"
+                                            Margin="0,0,8,0"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Command="{Binding CalculateProductsCommand}" />
+                                    <Button Content="Проверить остатки"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Command="{Binding CheckStockCommand}" />
+                                </StackPanel>
+                            </DockPanel>
+
+                            <DataGrid Grid.Row="1"
+                                      Margin="0,16,0,16"
+                                      AutoGenerateColumns="False"
+                                      ItemsSource="{Binding CalculatedProducts}"
+                                      SelectedItem="{Binding SelectedCalculatedProduct}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Продукт"
+                                                        Binding="{Binding ProductName}"
+                                                        Width="2.3*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Ед."
+                                                        Binding="{Binding UnitShortName}"
+                                                        Width="0.7*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Требуется"
+                                                        Binding="{Binding RequiredQuantityText}"
+                                                        Width="1*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Остаток"
+                                                        Binding="{Binding StockQuantityText}"
+                                                        Width="1*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Дефицит"
+                                                        Binding="{Binding DeficitQuantityText}"
+                                                        Width="1*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Комментарий"
+                                                        Binding="{Binding StatusComment}"
+                                                        Width="1.8*"
+                                                        IsReadOnly="True" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Border Grid.Row="2"
+                                    Padding="12"
+                                    CornerRadius="8"
+                                    Background="#FFF4E5"
+                                    BorderBrush="#F0B429"
+                                    BorderThickness="1"
+                                    Visibility="{Binding HasDeficit, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="Внимание: обнаружен дефицит продуктов. Перед выдачей необходимо скорректировать меню, заменить блюда или пополнить остатки склада."
+                                           TextWrapping="Wrap"
+                                           Foreground="#8D2B0B" />
+                            </Border>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Документы">
+                        <Grid Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" LastChildFill="False">
+                                <TextBlock Text="Связанные документы"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Foreground="#102A43"
+                                           DockPanel.Dock="Left" />
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                    <Button Content="Открыть документ"
+                                            Margin="0,0,8,0"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Command="{Binding OpenRelatedDocumentCommand}" />
+                                    <Button Content="Печать"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Command="{Binding PrintRelatedDocumentCommand}" />
+                                </StackPanel>
+                            </DockPanel>
+
+                            <DataGrid Grid.Row="1"
+                                      Margin="0,16,0,0"
+                                      AutoGenerateColumns="False"
+                                      ItemsSource="{Binding RelatedDocuments}"
+                                      SelectedItem="{Binding SelectedRelatedDocument}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Тип документа"
+                                                        Binding="{Binding DocumentTypeName}"
+                                                        Width="2*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="№"
+                                                        Binding="{Binding Number}"
+                                                        Width="0.8*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Дата"
+                                                        Binding="{Binding DateText}"
+                                                        Width="1*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Статус"
+                                                        Binding="{Binding StatusName}"
+                                                        Width="1.2*"
+                                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Комментарий"
+                                                        Binding="{Binding Comment}"
+                                                        Width="2*"
+                                                        IsReadOnly="True" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Border>
+
+            <StackPanel Grid.Column="1">
+                <Border Margin="0,0,0,8"
+                        Padding="16"
+                        Style="{StaticResource CardBorderStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Сводка по меню"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="#102A43" />
+
+                        <Grid Margin="0,16,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="Дата" Foreground="#486581" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding MenuDateText}" FontWeight="SemiBold" />
+
+                            <TextBlock Grid.Row="1" Text="Статус" Margin="0,10,0,0" Foreground="#486581" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,10,0,0" Text="{Binding StatusName}" FontWeight="SemiBold" />
+
+                            <TextBlock Grid.Row="2" Text="Детей на питание" Margin="0,10,0,0" Foreground="#486581" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,10,0,0" Text="{Binding TotalChildrenCount}" FontWeight="SemiBold" />
+
+                            <TextBlock Grid.Row="3" Text="Блюд в меню" Margin="0,10,0,0" Foreground="#486581" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,10,0,0" Text="{Binding DishCount}" FontWeight="SemiBold" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="0,0,0,8"
+                        Padding="16"
+                        Style="{StaticResource CardBorderStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Быстрые действия"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="#102A43" />
+
+                        <Button Content="Заполнить из шаблона"
+                                Margin="0,16,0,8"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Command="{Binding FillFromCycleMenuCommand}" />
+                        <Button Content="Открыть меню-требование"
+                                Margin="0,0,0,8"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Command="{Binding OpenRequirementCommand}" />
+                        <Button Content="Создать выдачу со склада"
+                                Margin="0,0,0,8"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Command="{Binding CreateStockIssueCommand}" />
+                        <Button Content="Открыть печатную форму"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Command="{Binding OpenPrintPreviewCommand}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Padding="16"
+                        Style="{StaticResource CardBorderStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Контроль состояния"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="#102A43" />
+
+                        <StackPanel Margin="0,16,0,0">
+                            <TextBlock Text="• Посещаемость заполнена"
+                                       Foreground="{Binding AttendanceStatusBrush}" />
+                            <TextBlock Text="• Блюда выбраны"
+                                       Margin="0,8,0,0"
+                                       Foreground="{Binding DishesStatusBrush}" />
+                            <TextBlock Text="• Продукты рассчитаны"
+                                       Margin="0,8,0,0"
+                                       Foreground="{Binding CalculationStatusBrush}" />
+                            <TextBlock Text="• Меню-требование создано"
+                                       Margin="0,8,0,0"
+                                       Foreground="{Binding RequirementStatusBrush}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <StatusBar Grid.Row="3" Margin="16,0,16,16">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage}" />
+            </StatusBarItem>
+            <Separator />
+            <StatusBarItem>
+                <TextBlock Text="Дата меню:" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding MenuDateText}" />
+            </StatusBarItem>
+            <Separator />
+            <StatusBarItem>
+                <TextBlock Text="Статус:" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusName}" />
+            </StatusBarItem>
+            <Separator />
+            <StatusBarItem>
+                <TextBlock Text="Детей:" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding TotalChildrenCount}" />
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</UserControl>

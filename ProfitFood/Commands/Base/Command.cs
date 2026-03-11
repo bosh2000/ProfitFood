@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace ProfitFood.UI.Infrastructure.Commands.Base
+namespace ProfitFood.UI.Commands.Base
 {
     public abstract class Command : ICommand
     {
