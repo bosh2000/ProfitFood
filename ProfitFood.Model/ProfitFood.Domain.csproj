@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.0.1.50</AssemblyVersion>
-    <FileVersion>1.0.1.50</FileVersion>
+    <AssemblyVersion>1.0.1.60</AssemblyVersion>
+    <FileVersion>1.0.1.60</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,11 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Entities\SystemEntities\" />
-    <Folder Include="Entities\References\" />
-    <Folder Include="Entities\Recipes\" />
-    <Folder Include="Entities\Menus\" />
     <Folder Include="Entities\Stocks\" />
-    <Folder Include="Entities\Documents\" />
   </ItemGroup>
 
 </Project>

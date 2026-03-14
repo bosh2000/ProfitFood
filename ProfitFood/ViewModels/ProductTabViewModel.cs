@@ -14,88 +14,88 @@ using System.Windows.Input;
 
 namespace ProfitFood.UI.ViewModels
 {
-    /// <summary>
-    /// Вкладка Продукты в Tab в основном экране
-    /// </summary>
-    public class ProductTabViewModel : ViewModel
-    {
-        public ObservableCollection<ProductItemView> Products { get; } = new ObservableCollection<ProductItemView>();
-        private ProductItemView _selectedProduct;
-        private readonly IProfitDbRepository _profitDbRepository;
+    ///// <summary>
+    ///// Вкладка Продукты в Tab в основном экране
+    ///// </summary>
+    //public class ProductTabViewModel : ViewModel
+    //{
+    //    public ObservableCollection<ProductItemView> Products { get; } = new ObservableCollection<ProductItemView>();
+    //    private ProductItemView _selectedProduct;
+    //    private readonly IProfitDbRepository _profitDbRepository;
 
-        public ProductItemView SelectedProduct
-        {
-            get { return _selectedProduct; }
-            set
-            {
-                _selectedProduct = value;
-                OnPropertyChanged();
-            }
-        }
+    //    public ProductItemView SelectedProduct
+    //    {
+    //        get { return _selectedProduct; }
+    //        set
+    //        {
+    //            _selectedProduct = value;
+    //            OnPropertyChanged();
+    //        }
+    //    }
 
-        public ICommand AddProductCommand { get; }
-        public ICommand DeleteProductCommand { get; }
-        public ICommand EditProductCommand { get; }
-        public string SearchProduct { get; set; }
+    //    public ICommand AddProductCommand { get; }
+    //    public ICommand DeleteProductCommand { get; }
+    //    public ICommand EditProductCommand { get; }
+    //    public string SearchProduct { get; set; }
 
-        public ProductTabViewModel(IProfitDbRepository profitDbRepository)
-        {
-            AddProductCommand = new LambdaCommand(AddProduct);
-            DeleteProductCommand = new LambdaCommand(DeleteProduct, CanEditDelete);
-            EditProductCommand = new LambdaCommand(EditProduct, CanEditDelete);
-            _profitDbRepository = profitDbRepository;
+    //    public ProductTabViewModel(IProfitDbRepository profitDbRepository)
+    //    {
+    //        AddProductCommand = new LambdaCommand(AddProduct);
+    //        DeleteProductCommand = new LambdaCommand(DeleteProduct, CanEditDelete);
+    //        EditProductCommand = new LambdaCommand(EditProduct, CanEditDelete);
+    //        _profitDbRepository = profitDbRepository;
 
-            LoadProducts();
-        }
+    //        LoadProducts();
+    //    }
 
-        private void LoadProducts()
-        {
-            Products.Clear();
-            Products.Add(new ProductItemView
-            {
-                Id = Guid.NewGuid(),
-                Name = "Product1",
-                BaseUnit = "Шт",
-                BaseUnitStorage = "Упаковка",
-                Description = "Новый продукт",
-                FullName = "FullNamePRoduct",
-                Group = "ГруппаПродукта"
-            });
-            Products.Add(new ProductItemView
-            {
-                Id = Guid.NewGuid(),
-                Name = "Product2",
-                BaseUnit = "Шт",
-                BaseUnitStorage = "Упаковка",
-                Description = "Новый продукт",
-                FullName = "FullNamePRoduct2",
-                Group = "ГруппаПродукта"
-            });
-            Products.Add(new ProductItemView
-            {
-                Id = Guid.NewGuid(),
-                Name = "Product3",
-                BaseUnit = "Шт",
-                BaseUnitStorage = "Упаковка",
-                Description = "Новый продукт",
-                FullName = "FullNamePRoduct3",
-                Group = "ГруппаПродукта"
-            });
-        }
+    //    private void LoadProducts()
+    //    {
+    //        Products.Clear();
+    //        Products.Add(new ProductItemView
+    //        {
+    //            Id = Guid.NewGuid(),
+    //            Name = "Product1",
+    //            BaseUnit = "Шт",
+    //            BaseUnitStorage = "Упаковка",
+    //            Description = "Новый продукт",
+    //            FullName = "FullNamePRoduct",
+    //            Group = "ГруппаПродукта"
+    //        });
+    //        Products.Add(new ProductItemView
+    //        {
+    //            Id = Guid.NewGuid(),
+    //            Name = "Product2",
+    //            BaseUnit = "Шт",
+    //            BaseUnitStorage = "Упаковка",
+    //            Description = "Новый продукт",
+    //            FullName = "FullNamePRoduct2",
+    //            Group = "ГруппаПродукта"
+    //        });
+    //        Products.Add(new ProductItemView
+    //        {
+    //            Id = Guid.NewGuid(),
+    //            Name = "Product3",
+    //            BaseUnit = "Шт",
+    //            BaseUnitStorage = "Упаковка",
+    //            Description = "Новый продукт",
+    //            FullName = "FullNamePRoduct3",
+    //            Group = "ГруппаПродукта"
+    //        });
+    //    }
 
-        private void AddProduct(object param)
-        {
-        }
+    //    private void AddProduct(object param)
+    //    {
+    //    }
 
-        private void DeleteProduct(object param)
-        {
-        }
+    //    private void DeleteProduct(object param)
+    //    {
+    //    }
 
-        private void EditProduct(object param)
-        {
-        }
+    //    private void EditProduct(object param)
+    //    {
+    //    }
 
-        private bool CanEditDelete(object param)
-        { return SelectedProduct != null; }
-    }
+    //    private bool CanEditDelete(object param)
+    //    { return SelectedProduct != null; }
+    //}
 }

@@ -21,10 +21,10 @@ namespace ProfitFood.UI.Views.BaseUnitStorage
     /// </summary>
     public partial class BaseUnitsStorageView : UserControl
     {
-        public BaseUnitsStorageView(BaseUnitStorageTabViewModel vm)
-        {
-            this.DataContext = vm;
-            InitializeComponent();
-        }
+        //public BaseUnitsStorageView(BaseUnitStorageTabViewModel vm)
+        //{
+        //    this.DataContext = vm;
+        //    InitializeComponent();
+        //}
     }
 }

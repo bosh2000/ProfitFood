@@ -17,14 +17,14 @@ using System.Windows.Shapes;
 namespace ProfitFood.UI.Views.ProductGroup
 {
     /// <summary>
-    /// Логика взаимодействия для ProductGroupsView.xaml
-    /// </summary>
-    public partial class ProductGroupsView : UserControl
-    {
-        public ProductGroupsView(ProductGroupTabViewModel viewModel)
-        {
-            DataContext = viewModel;
-            InitializeComponent();
-        }
-    }
+    ///// Логика взаимодействия для ProductGroupsView.xaml
+    ///// </summary>
+    //public partial class ProductGroupsView : UserControl
+    //{
+    //    public ProductGroupsView(ProductGroupTabViewModel viewModel)
+    //    {
+    //        DataContext = viewModel;
+    //        InitializeComponent();
+    //    }
+    //}
 }

@@ -1,6 +1,7 @@
 ﻿using ProfitFood.DAL.Repository.Implementation.ItemRepository;
 using ProfitFood.DAL.Repository.Interfaces;
-using ProfitFoot.DAL;
+using ProfitFood.Infrastructure.Repository.Implementation.ItemRepository;
+using ProfitFoot.Infrastructure;
 
 namespace ProfitFood.DAL.Repository.Implementation
 {
@@ -13,9 +14,8 @@ namespace ProfitFood.DAL.Repository.Implementation
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public IBaseUnitRepository BaseUnitRepository => new BaseUnitRepository(_context);
-        public IBaseUnitStorageRepository BaseUnitStorageRepository => new BaseUnitStorageRepository(_context);
-        public IProductGroupRepository ProductGroupRepository => new ProductGroupRepositiry(_context);
+        public IUnitRepository UnitRepository => new UnitRepository(_context);
+        public IProductCategoryRepository ProductGroupRepository => new ProductGroupRepositiry(_context);
         public IProductRepository ProductRepository => new ProductRepository(_context);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ProfitFood.DAL.Repository.Interfaces;
-using ProfitFood.Model.DBModel;
 using ProfitFood.Model.Infrastructure;
 using ProfitFood.UI.Commands;
 using ProfitFood.UI.Models.View;
@@ -12,135 +11,135 @@ using System.Windows.Input;
 
 namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
 {
-    /// <summary>
-    /// Вкладка Базовая единица измерения в Tab в основом экране
-    /// </summary>
-    public class BaseUnitTabViewModel : ViewModel
-    {
-        private readonly IProfitDbRepository _profitDbRepository;
-        private readonly IMapper _mapper;
+    ///// <summary>
+    ///// Вкладка Базовая единица измерения в Tab в основом экране
+    ///// </summary>
+    //public class BaseUnitTabViewModel : ViewModel
+    //{
+    //    private readonly IProfitDbRepository _profitDbRepository;
+    //    private readonly IMapper _mapper;
 
-        public ObservableCollection<BaseUnitItemView> BaseUnits { get; } = new ObservableCollection<BaseUnitItemView>();
-        private BaseUnitItemView _selectedBaseUnit;
+    //    public ObservableCollection<BaseUnitItemView> BaseUnits { get; } = new ObservableCollection<BaseUnitItemView>();
+    //    private BaseUnitItemView _selectedBaseUnit;
 
-        public BaseUnitItemView SelectedBaseUnit
-        {
-            get => _selectedBaseUnit;
-            set
-            {
-                _selectedBaseUnit = value;
-                OnPropertyChanged();
-            }
-        }
+    //    public BaseUnitItemView SelectedBaseUnit
+    //    {
+    //        get => _selectedBaseUnit;
+    //        set
+    //        {
+    //            _selectedBaseUnit = value;
+    //            OnPropertyChanged();
+    //        }
+    //    }
 
-        public ICommand AddProductCommand { get; }
-        public ICommand DeleteProductCommand { get; }
-        public ICommand EditProductCommand { get; }
-        public string SearchBaseUnit { get; set; }
+    //    public ICommand AddProductCommand { get; }
+    //    public ICommand DeleteProductCommand { get; }
+    //    public ICommand EditProductCommand { get; }
+    //    public string SearchBaseUnit { get; set; }
 
-        public BaseUnitTabViewModel(IProfitDbRepository repository, IMapper mapper)
-        {
-            _profitDbRepository = repository;
-            _mapper = mapper;
-            AddProductCommand = new LambdaCommand(AddBaseUnitItem);
-            DeleteProductCommand = new LambdaCommandAsync(DeleteBaseUnitItem, CanEditDelete);
-            EditProductCommand = new LambdaCommand(EditBaseUnitItem, CanEditDelete);
-            LoadBaseUnits();
-        }
+    //    public BaseUnitTabViewModel(IProfitDbRepository repository, IMapper mapper)
+    //    {
+    //        _profitDbRepository = repository;
+    //        _mapper = mapper;
+    //        AddProductCommand = new LambdaCommand(AddBaseUnitItem);
+    //        DeleteProductCommand = new LambdaCommandAsync(DeleteBaseUnitItem, CanEditDelete);
+    //        EditProductCommand = new LambdaCommand(EditBaseUnitItem, CanEditDelete);
+    //        LoadBaseUnits();
+    //    }
 
-        private async void LoadBaseUnits()
-        {
-            BaseUnits.Clear();
+    //    private async void LoadBaseUnits()
+    //    {
+    //        BaseUnits.Clear();
 
-            var units = await _profitDbRepository.BaseUnitRepository.ToListAsync();
-            foreach (var unit in units)
-                BaseUnits.Add(_mapper.Map<BaseUnitItemView>(unit));
-        }
+    //        var units = await _profitDbRepository.BaseUnitRepository.ToListAsync();
+    //        foreach (var unit in units)
+    //            BaseUnits.Add(_mapper.Map<BaseUnitItemView>(unit));
+    //    }
 
-        private async void AddBaseUnitItem(object param)
-        {
-            var addBaseUnitWindows = new BaseUnitItemWindow();
-            var viewModel = (BaseUnitItemWindowViewModel)addBaseUnitWindows.DataContext;
-            viewModel.BaseUnitCreated += async baseUnit =>
-            {
-                var result = BaseUnit.Create(baseUnit.Name);
-                if (!result.IsSuccess)
-                {
-                    ShowErrors(result.Errors);
-                    return;
-                }
-                var baseUnitCreated = await _profitDbRepository.BaseUnitRepository.CreateASync(result.Value);
-                var baseUnitView = _mapper.Map<BaseUnitItemView>(baseUnitCreated);
-                BaseUnits.Add(baseUnitView);
-                SelectedBaseUnit = baseUnitView;
-                addBaseUnitWindows.Close();
-            };
-            addBaseUnitWindows.Owner = Application.Current.MainWindow;
-            addBaseUnitWindows.ShowDialog();
-        }
+    //    private async void AddBaseUnitItem(object param)
+    //    {
+    //        var addBaseUnitWindows = new BaseUnitItemWindow();
+    //        var viewModel = (BaseUnitItemWindowViewModel)addBaseUnitWindows.DataContext;
+    //        viewModel.BaseUnitCreated += async baseUnit =>
+    //        {
+    //            var result = BaseUnit.Create(baseUnit.Name);
+    //            if (!result.IsSuccess)
+    //            {
+    //                ShowErrors(result.Errors);
+    //                return;
+    //            }
+    //            var baseUnitCreated = await _profitDbRepository.BaseUnitRepository.CreateASync(result.Value);
+    //            var baseUnitView = _mapper.Map<BaseUnitItemView>(baseUnitCreated);
+    //            BaseUnits.Add(baseUnitView);
+    //            SelectedBaseUnit = baseUnitView;
+    //            addBaseUnitWindows.Close();
+    //        };
+    //        addBaseUnitWindows.Owner = Application.Current.MainWindow;
+    //        addBaseUnitWindows.ShowDialog();
+    //    }
 
-        private async Task DeleteBaseUnitItem(object param)
-        {
-            MessageBoxResult result = MessageBox.Show(
-                "Вы уверенны что хотите удалить запись?",
-                "Подтверждение",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
-            {
-                var baseUnit = await _profitDbRepository.BaseUnitRepository.FirstOfDefaultAsync(x => x.Id == SelectedBaseUnit.Id);
-                if (baseUnit != null)
-                {
-                    await _profitDbRepository.BaseUnitRepository.DeleteAsync(baseUnit);
-                    BaseUnits.Remove(SelectedBaseUnit);
-                }
-            }
-        }
+    //    private async Task DeleteBaseUnitItem(object param)
+    //    {
+    //        MessageBoxResult result = MessageBox.Show(
+    //            "Вы уверенны что хотите удалить запись?",
+    //            "Подтверждение",
+    //            MessageBoxButton.YesNo,
+    //            MessageBoxImage.Question);
+    //        if (result == MessageBoxResult.Yes)
+    //        {
+    //            var baseUnit = await _profitDbRepository.BaseUnitRepository.FirstOfDefaultAsync(x => x.Id == SelectedBaseUnit.Id);
+    //            if (baseUnit != null)
+    //            {
+    //                await _profitDbRepository.BaseUnitRepository.DeleteAsync(baseUnit);
+    //                BaseUnits.Remove(SelectedBaseUnit);
+    //            }
+    //        }
+    //    }
 
-        private void EditBaseUnitItem(object param)
-        {
-            if (SelectedBaseUnit == null) return;
+    //    private void EditBaseUnitItem(object param)
+    //    {
+    //        if (SelectedBaseUnit == null) return;
 
-            var editWindow = new BaseUnitItemWindow();
-            var viewModel = (BaseUnitItemWindowViewModel)editWindow.DataContext;
+    //        var editWindow = new BaseUnitItemWindow();
+    //        var viewModel = (BaseUnitItemWindowViewModel)editWindow.DataContext;
 
-            // Инициализируем в режиме редактирования
-            viewModel.InitializeForEdit(SelectedBaseUnit);
+    //        // Инициализируем в режиме редактирования
+    //        viewModel.InitializeForEdit(SelectedBaseUnit);
 
-            viewModel.BaseUnitUpdated += async updatedItem =>
-            {
-                var entity = await _profitDbRepository.BaseUnitRepository
-                    .FirstOfDefaultAsync(x => x.Id == updatedItem.Id);
+    //        viewModel.BaseUnitUpdated += async updatedItem =>
+    //        {
+    //            var entity = await _profitDbRepository.BaseUnitRepository
+    //                .FirstOfDefaultAsync(x => x.Id == updatedItem.Id);
 
-                if (entity != null)
-                {
-                    var result = entity.SetName(updatedItem.Name);
-                    if (!result.IsSuccess)
-                    {
-                        ShowErrors(result.Errors);
-                        return;
-                    }
-                    await _profitDbRepository.BaseUnitRepository.UpdateAsync(entity);
+    //            if (entity != null)
+    //            {
+    //                var result = entity.SetName(updatedItem.Name);
+    //                if (!result.IsSuccess)
+    //                {
+    //                    ShowErrors(result.Errors);
+    //                    return;
+    //                }
+    //                await _profitDbRepository.BaseUnitRepository.UpdateAsync(entity);
 
-                    // Обновляем элемент в коллекции
-                    var index = BaseUnits.IndexOf(SelectedBaseUnit);
-                    BaseUnits[index] = _mapper.Map<BaseUnitItemView>(entity);
-                    SelectedBaseUnit = BaseUnits[index];
-                }
+    //                // Обновляем элемент в коллекции
+    //                var index = BaseUnits.IndexOf(SelectedBaseUnit);
+    //                BaseUnits[index] = _mapper.Map<BaseUnitItemView>(entity);
+    //                SelectedBaseUnit = BaseUnits[index];
+    //            }
 
-                editWindow.Close();
-            };
+    //            editWindow.Close();
+    //        };
 
-            editWindow.Owner = Application.Current.MainWindow;
-            editWindow.ShowDialog();
-        }
+    //        editWindow.Owner = Application.Current.MainWindow;
+    //        editWindow.ShowDialog();
+    //    }
 
-        // TODO Добавить вывод ошибок в StatusBar
-        private void ShowErrors(IReadOnlyCollection<Error> errors)
-        {
-        }
+    //    // TODO Добавить вывод ошибок в StatusBar
+    //    private void ShowErrors(IReadOnlyCollection<Error> errors)
+    //    {
+    //    }
 
-        private bool CanEditDelete(object param)
-        { return SelectedBaseUnit != null; }
-    }
+    //    private bool CanEditDelete(object param)
+    //    { return SelectedBaseUnit != null; }
+    //}
 }

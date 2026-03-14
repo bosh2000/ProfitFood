@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:ProfitFood.UI.Views"
     xmlns:vm="clr-namespace:ProfitFood.UI.ViewModels"
+    xmlns:vmDialyMenuEditor="clr-namespace:ProfitFood.UI.ViewModels.DailyMenuEditorViewModels"
     Title="ProfitFood"
     Width="1400"
     Height="900"
@@ -18,7 +19,7 @@
             <views:DashboardView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:DailyMenuEditorViewModel}">
+        <DataTemplate DataType="{x:Type vmDialyMenuEditor:DailyMenuEditorViewModel}">
             <views:DailyMenuEditorView />
         </DataTemplate>
 

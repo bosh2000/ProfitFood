@@ -1,11 +1,7 @@
 ﻿using ProfitFood.DAL.Repository.Interfaces;
-using ProfitFood.Model.DBModel;
-using ProfitFoot.DAL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ProfitFood.Domain.Entities.References;
+using ProfitFood.Infrastructure.Repository.Implementation;
+using ProfitFoot.Infrastructure;
 
 namespace ProfitFood.DAL.Repository.Implementation.ItemRepository
 {

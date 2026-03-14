@@ -19,12 +19,12 @@ namespace ProfitFood.UI.Views.UserControls
     /// <summary>
     /// Логика взаимодействия для BaseUnitView.xaml
     /// </summary>
-    public partial class BaseUnitsView : UserControl
-    {
-        public BaseUnitsView(BaseUnitTabViewModel vm)
-        {
-            this.DataContext = vm;
-            InitializeComponent();
-        }
-    }
+    //public partial class BaseUnitsView : UserControl
+    //{
+    //    public BaseUnitsView(BaseUnitTabViewModel vm)
+    //    {
+    //        this.DataContext = vm;
+    //        InitializeComponent();
+    //    }
+    //}
 }

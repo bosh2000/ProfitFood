@@ -1,14 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProfitFood.DAL.Repository.Interfaces;
-using ProfitFoot.DAL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using ProfitFoot.Infrastructure;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ProfitFood.DAL.Repository.Implementation
+namespace ProfitFood.Infrastructure.Repository.Implementation
 {
     internal class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {

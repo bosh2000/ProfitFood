@@ -2,9 +2,8 @@
 {
     public interface IProfitDbRepository
     {
-        IBaseUnitRepository BaseUnitRepository { get; }
-        IBaseUnitStorageRepository BaseUnitStorageRepository { get; }
-        IProductGroupRepository ProductGroupRepository { get; }
+        IUnitRepository UnitRepository { get; }
+        IProductCategoryRepository ProductGroupRepository { get; }
         IProductRepository ProductRepository { get; }
     }
 }

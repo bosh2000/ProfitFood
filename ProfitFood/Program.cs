@@ -6,7 +6,7 @@ using ProfitFood.DAL.Repository.Interfaces;
 using ProfitFood.UI.Mappings;
 using ProfitFood.UI.ViewModels;
 using ProfitFood.UI.ViewModels.BaseUnitViewModels;
-using ProfitFoot.DAL;
+using ProfitFoot.Infrastructure;
 
 namespace ProfitFood.UI
 {
@@ -19,14 +19,14 @@ namespace ProfitFood.UI
                 .ConfigureServices(services =>
                 {
                     services.AddDbContext<ProfitFoodDbContext>(
-                        option => option.UseSqlite("Data Source=profitfood.db")
+                        option => option.UseSqlite("Data Source=D:\\DbProfitFood\\profitfood.db")
                         );
                     services.AddAutoMapper(typeof(AutoMapperProfile));
                     services.AddScoped<IProfitDbRepository, ProfitDbRepository>();
                     services.AddScoped<MainWindow>();
                     services.AddScoped<MainWindowViewModel>();
-                    services.AddScoped<ProductTabViewModel>();
-                    services.AddScoped<BaseUnitTabViewModel>();
+                    //   services.AddScoped<ProductTabViewModel>();
+                    //   services.AddScoped<BaseUnitTabViewModel>();
 
                     services.AddScoped<App>();
                 }).
