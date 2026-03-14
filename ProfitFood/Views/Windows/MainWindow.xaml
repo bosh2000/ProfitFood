@@ -38,6 +38,47 @@
         <DataTemplate DataType="{x:Type vm:ReferencesViewModel}">
             <views:ReferencesView />
         </DataTemplate>
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Padding" Value="14,6" />
+            <Setter Property="Background" Value="#2F6FED" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="#2F6FED" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                         Background="{TemplateBinding Background}"
+                         BorderBrush="{TemplateBinding BorderBrush}"
+                         BorderThickness="{TemplateBinding BorderThickness}"
+                         CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Opacity" Value="0.92" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Border" Property="Opacity" Value="0.82" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#334E68" />
+            <Setter Property="BorderBrush" Value="#BCCCDC" />
+        </Style>
     </Window.Resources>
 
     <Grid Background="#FFF5F7FA">
@@ -65,12 +106,17 @@
                     <Button
                         Margin="0,0,8,0"
                         Command="{Binding OpenDailyMenuEditorCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
                         Content="Создать меню" />
                     <Button
                         Margin="0,0,8,0"
                         Command="{Binding OpenDailyMenusCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
                         Content="Открыть список меню" />
-                    <Button Command="{Binding OpenDocumentsCommand}" Content="Документы" />
+                    <Button
+                        Command="{Binding OpenDocumentsCommand}"
+                        Content="Документы"
+                        Style="{StaticResource SecondaryButtonStyle}" />
                 </StackPanel>
             </DockPanel>
         </Border>
@@ -99,31 +145,37 @@
                     <Button
                         Margin="0,0,0,8"
                         Command="{Binding OpenDashboardCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
                         Content="Главная" />
 
                     <Button
                         Margin="0,0,0,8"
                         Command="{Binding OpenDailyMenusCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
                         Content="Меню" />
 
                     <Button
                         Margin="0,0,0,8"
                         Command="{Binding OpenRecipeCardsCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
                         Content="Техкарты" />
 
                     <Button
                         Margin="0,0,0,8"
                         Command="{Binding OpenStockCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
                         Content="Склад" />
 
                     <Button
                         Margin="0,0,0,8"
                         Command="{Binding OpenDocumentsCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
                         Content="Документы" />
 
                     <Button
                         Margin="0,0,0,8"
                         Command="{Binding OpenReferencesCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
                         Content="Справочники" />
                 </StackPanel>
             </Border>

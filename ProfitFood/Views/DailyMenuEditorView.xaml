@@ -4,10 +4,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ProfitFood.UI.ViewModels"
+             xmlns:vmDialyMenuEditor="clr-namespace:ProfitFood.UI.ViewModels.DailyMenuEditorViewModels"
              mc:Ignorable="d"
              d:DesignHeight="900"
              d:DesignWidth="1400"
-             d:DataContext="{d:DesignInstance Type=vm:DailyMenuEditorViewModel, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance Type=vmDialyMenuEditor:DailyMenuEditorViewModel, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
