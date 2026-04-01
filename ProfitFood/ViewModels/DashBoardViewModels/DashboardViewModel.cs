@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Media;
 
-namespace ProfitFood.UI.ViewModels
+namespace ProfitFood.UI.ViewModels.DashBoardViewModels
 {
     /// <summary>
     /// Главная панель системы.
@@ -138,58 +138,5 @@ namespace ProfitFood.UI.ViewModels
 
             StatusMessage = "Загружены тестовые данные Dashboard";
         }
-    }
-
-    /// <summary>
-    /// Строка меню на сегодня.
-    /// </summary>
-    public sealed class DashboardMenuItemViewModel
-    {
-        public DashboardMenuItemViewModel(string mealTypeName, string dishName, string recipeCardNumber, string outputText)
-        {
-            MealTypeName = mealTypeName;
-            DishName = dishName;
-            RecipeCardNumber = recipeCardNumber;
-            OutputText = outputText;
-        }
-
-        public string MealTypeName { get; }
-        public string DishName { get; }
-        public string RecipeCardNumber { get; }
-        public string OutputText { get; }
-    }
-
-    /// <summary>
-    /// Строка критического остатка.
-    /// </summary>
-    public sealed class CriticalStockRowViewModel
-    {
-        public CriticalStockRowViewModel(string productName, string stockText, string minStockText)
-        {
-            ProductName = productName;
-            StockText = stockText;
-            MinStockText = minStockText;
-        }
-
-        public string ProductName { get; }
-        public string StockText { get; }
-        public string MinStockText { get; }
-    }
-
-    /// <summary>
-    /// Строка последнего документа.
-    /// </summary>
-    public sealed class LastDocumentRowViewModel
-    {
-        public LastDocumentRowViewModel(string documentName, string dateText, string statusName)
-        {
-            DocumentName = documentName;
-            DateText = dateText;
-            StatusName = statusName;
-        }
-
-        public string DocumentName { get; }
-        public string DateText { get; }
-        public string StatusName { get; }
     }
 }

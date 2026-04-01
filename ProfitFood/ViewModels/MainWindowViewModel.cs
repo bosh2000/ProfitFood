@@ -1,4 +1,5 @@
 ﻿using ProfitFood.UI.ViewModels.DailyMenuEditorViewModels;
+using ProfitFood.UI.ViewModels.DashBoardViewModels;
 using System.Windows.Input;
 
 namespace ProfitFood.UI.ViewModels

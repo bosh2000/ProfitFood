@@ -7,6 +7,7 @@
     xmlns:views="clr-namespace:ProfitFood.UI.Views"
     xmlns:vm="clr-namespace:ProfitFood.UI.ViewModels"
     xmlns:vmDialyMenuEditor="clr-namespace:ProfitFood.UI.ViewModels.DailyMenuEditorViewModels"
+    xmlns:vmDashdoardViewModel="clr-namespace:ProfitFood.UI.ViewModels.DashBoardViewModels"
     Title="ProfitFood"
     Width="1400"
     Height="900"
@@ -15,7 +16,7 @@
 
     <Window.Resources>
         <!--  Какой View показывать для какой ViewModel  -->
-        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+        <DataTemplate DataType="{x:Type vmDashdoardViewModel:DashboardViewModel}">
             <views:DashboardView />
         </DataTemplate>
 
