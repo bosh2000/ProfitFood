@@ -1,5 +1,7 @@
-﻿using ProfitFood.UI.ViewModels.DailyMenuEditorViewModels;
+﻿using Microsoft.Extensions.DependencyInjection;
+using ProfitFood.UI.ViewModels.DailyMenuEditorViewModels;
 using ProfitFood.UI.ViewModels.DashBoardViewModels;
+using ProfitFood.UI.ViewModels.Reference;
 using System.Windows.Input;
 
 namespace ProfitFood.UI.ViewModels
@@ -8,8 +10,9 @@ namespace ProfitFood.UI.ViewModels
     {
         private ViewModelBase? _currentViewModel;
         private string _statusText = "Готово";
+        private readonly IServiceProvider _serviceProvider;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IServiceProvider serviceProvider)
         {
             OpenDashboardCommand = new RelayCommand(_ => OpenDashboard());
             OpenDailyMenusCommand = new RelayCommand(_ => OpenDailyMenus());
@@ -20,6 +23,7 @@ namespace ProfitFood.UI.ViewModels
             OpenReferencesCommand = new RelayCommand(_ => OpenReferences());
 
             OpenDashboard();
+            _serviceProvider = serviceProvider;
         }
 
         public ViewModelBase? CurrentViewModel
@@ -80,7 +84,7 @@ namespace ProfitFood.UI.ViewModels
 
         private void OpenReferences()
         {
-            CurrentViewModel = new ReferencesViewModel();
+            CurrentViewModel = _serviceProvider.GetRequiredService<ReferencesViewModel>();
             StatusText = "Открыт раздел справочников";
         }
     }

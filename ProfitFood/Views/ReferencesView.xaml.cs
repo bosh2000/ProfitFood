@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ProfitFood.UI.Views
+
 {
     /// <summary>
     /// Логика взаимодействия для ReferencesVie.xaml

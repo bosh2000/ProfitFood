@@ -3,9 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProfitFood.DAL.Repository.Implementation;
 using ProfitFood.DAL.Repository.Interfaces;
+using ProfitFood.Infrastructure.Services.Interfaces;
+using ProfitFood.Infrastructure.Services.References;
 using ProfitFood.UI.Mappings;
 using ProfitFood.UI.ViewModels;
-using ProfitFood.UI.ViewModels.BaseUnitViewModels;
+using ProfitFood.UI.ViewModels.Reference;
+using ProfitFood.UI.ViewModels.Reference.Units;
 using ProfitFoot.Infrastructure;
 
 namespace ProfitFood.UI
@@ -23,8 +26,12 @@ namespace ProfitFood.UI
                         );
                     services.AddAutoMapper(typeof(AutoMapperProfile));
                     services.AddScoped<IProfitDbRepository, ProfitDbRepository>();
+                    services.AddScoped<IUnitAppService, UnitAppService>();
                     services.AddScoped<MainWindow>();
                     services.AddScoped<MainWindowViewModel>();
+                    services.AddScoped<UnitsReferenceViewModel>();
+                    services.AddScoped<ReferencesViewModel>();
+
                     //   services.AddScoped<ProductTabViewModel>();
                     //   services.AddScoped<BaseUnitTabViewModel>();
 

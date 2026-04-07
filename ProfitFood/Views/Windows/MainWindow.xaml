@@ -7,7 +7,8 @@
     xmlns:views="clr-namespace:ProfitFood.UI.Views"
     xmlns:vm="clr-namespace:ProfitFood.UI.ViewModels"
     xmlns:vmDialyMenuEditor="clr-namespace:ProfitFood.UI.ViewModels.DailyMenuEditorViewModels"
-    xmlns:vmDashdoardViewModel="clr-namespace:ProfitFood.UI.ViewModels.DashBoardViewModels"
+    xmlns:vmDashboardViewModel="clr-namespace:ProfitFood.UI.ViewModels.DashBoardViewModels"
+    xmlns:vmReferenceViewModel="clr-namespace:ProfitFood.UI.ViewModels.Reference"
     Title="ProfitFood"
     Width="1400"
     Height="900"
@@ -16,7 +17,7 @@
 
     <Window.Resources>
         <!--  Какой View показывать для какой ViewModel  -->
-        <DataTemplate DataType="{x:Type vmDashdoardViewModel:DashboardViewModel}">
+        <DataTemplate DataType="{x:Type vmDashboardViewModel:DashboardViewModel}">
             <views:DashboardView />
         </DataTemplate>
 
@@ -36,7 +37,7 @@
             <views:DocumentsView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:ReferencesViewModel}">
+        <DataTemplate DataType="{x:Type vmReferenceViewModel:ReferencesViewModel}">
             <views:ReferencesView />
         </DataTemplate>
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">

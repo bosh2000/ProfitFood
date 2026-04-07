@@ -5,14 +5,14 @@ using System.Windows;
 namespace ProfitFood.UI
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// =ЛОгика работы MainWindow
     /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow(MainWindowViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel();
+            DataContext = viewModel;
         }
     }
 }
