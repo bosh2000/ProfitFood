@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProfitFood.Infrastructure.Services.Interfaces
+namespace ProfitFood.Applications.Services.Interfaces
 {
-    public interface IStorageLocationAppService
+    public interface IDishCategoryAppService
     {
     }
 }

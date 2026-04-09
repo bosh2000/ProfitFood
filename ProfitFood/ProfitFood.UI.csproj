@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <AssemblyVersion>1.0.2.309</AssemblyVersion>
-    <FileVersion>1.0.2.309</FileVersion>
+    <AssemblyVersion>1.0.2.339</AssemblyVersion>
+    <FileVersion>1.0.2.339</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,13 +38,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProfitFoot.DAL\ProfitFood.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Resource\Styles\" />
     <Folder Include="Resource\Templates\" />
     <Folder Include="Views\DailyMenu\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProfitFood.Services\ProfitFood.Applications.csproj" />
+    <ProjectReference Include="..\ProfitFoot.DAL\ProfitFood.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

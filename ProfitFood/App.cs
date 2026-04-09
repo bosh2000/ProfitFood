@@ -6,12 +6,10 @@ namespace ProfitFood.UI
     public class App : Application
     {
         private readonly MainWindow _mainWindow;
-        private readonly IProfitDbRepository _repository;
 
-        public App(MainWindow mainWindow, IProfitDbRepository repository)
+        public App(MainWindow mainWindow)
         {
             this._mainWindow = mainWindow;
-            this._repository = repository;
         }
 
         protected override void OnStartup(StartupEventArgs e)

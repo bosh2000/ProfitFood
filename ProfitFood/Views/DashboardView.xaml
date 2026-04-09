@@ -1,13 +1,14 @@
-﻿<UserControl x:Class="ProfitFood.UI.Views.DashboardView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:ProfitFood.UI.ViewModels"
-             mc:Ignorable="d"
-             d:DesignHeight="900"
-             d:DesignWidth="1400"
-             d:DataContext="{d:DesignInstance Type=vm:DashboardViewModel, IsDesignTimeCreatable=True}">
+﻿<UserControl
+    x:Class="ProfitFood.UI.Views.DashboardView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:ProfitFood.UI.ViewModels.DashBoardViewModels"
+    d:DataContext="{d:DesignInstance Type=vm:DashboardViewModel,IsDesignTimeCreatable=True}"
+    d:DesignHeight="900"
+    d:DesignWidth="1400"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -42,14 +43,16 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="Border"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              Margin="{TemplateBinding Padding}" />
+                        <Border
+                            x:Name="Border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                            <ContentPresenter
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -67,7 +70,10 @@
             </Setter>
         </Style>
 
-        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+        <Style
+            x:Key="SecondaryButtonStyle"
+            BasedOn="{StaticResource PrimaryButtonStyle}"
+            TargetType="Button">
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="#334E68" />
             <Setter Property="BorderBrush" Value="#BCCCDC" />
@@ -131,23 +137,51 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <Border Grid.Row="0" Margin="16,16,16,8" Style="{StaticResource CardBorderStyle}">
+        <!--  Header  -->
+        <Border
+            Grid.Row="0"
+            Margin="16,16,16,8"
+            Style="{StaticResource CardBorderStyle}">
             <DockPanel LastChildFill="True">
                 <StackPanel DockPanel.Dock="Left">
-                    <TextBlock Text="Главная панель" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource ForegroundPrimary}" />
-                    <TextBlock Text="Оперативное состояние питания на сегодня" Margin="0,6,0,0" FontSize="13" Foreground="#627D98" />
+                    <TextBlock
+                        FontSize="24"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource ForegroundPrimary}"
+                        Text="Главная панель" />
+                    <TextBlock
+                        Margin="0,6,0,0"
+                        FontSize="13"
+                        Foreground="#627D98"
+                        Text="Оперативное состояние питания на сегодня" />
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Button Content="Создать меню" Width="120" Margin="0,0,8,0" Style="{StaticResource PrimaryButtonStyle}" Command="{Binding CreateMenuCommand}" />
-                    <Button Content="Открыть меню" Width="120" Margin="0,0,8,0" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding OpenTodayMenuCommand}" />
-                    <Button Content="Печать формы 299" Width="150" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding PrintRequirementCommand}" />
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <Button
+                        Width="120"
+                        Margin="0,0,8,0"
+                        Command="{Binding CreateMenuCommand}"
+                        Content="Создать меню"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button
+                        Width="120"
+                        Margin="0,0,8,0"
+                        Command="{Binding OpenTodayMenuCommand}"
+                        Content="Открыть меню"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button
+                        Width="150"
+                        Command="{Binding PrintRequirementCommand}"
+                        Content="Печать формы 299"
+                        Style="{StaticResource SecondaryButtonStyle}" />
                 </StackPanel>
             </DockPanel>
         </Border>
 
-        <!-- KPI -->
+        <!--  KPI  -->
         <Grid Grid.Row="1" Margin="16,0,16,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -156,36 +190,65 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" Margin="0,0,8,0" Style="{StaticResource CardBorderStyle}">
+            <Border
+                Grid.Column="0"
+                Margin="0,0,8,0"
+                Style="{StaticResource CardBorderStyle}">
                 <StackPanel>
-                    <TextBlock Text="Дата" Foreground="{StaticResource ForegroundSecondary}" />
-                    <TextBlock Text="{Binding TodayDateText}" Margin="0,8,0,0" FontSize="22" FontWeight="Bold" Foreground="{StaticResource ForegroundPrimary}" />
+                    <TextBlock Foreground="{StaticResource ForegroundSecondary}" Text="Дата" />
+                    <TextBlock
+                        Margin="0,8,0,0"
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Foreground="{StaticResource ForegroundPrimary}"
+                        Text="{Binding TodayDateText}" />
                 </StackPanel>
             </Border>
 
-            <Border Grid.Column="1" Margin="0,0,8,0" Style="{StaticResource CardBorderStyle}">
+            <Border
+                Grid.Column="1"
+                Margin="0,0,8,0"
+                Style="{StaticResource CardBorderStyle}">
                 <StackPanel>
-                    <TextBlock Text="Детей на питании" Foreground="{StaticResource ForegroundSecondary}" />
-                    <TextBlock Text="{Binding TotalChildren}" Margin="0,8,0,0" FontSize="22" FontWeight="Bold" Foreground="{StaticResource ForegroundPrimary}" />
+                    <TextBlock Foreground="{StaticResource ForegroundSecondary}" Text="Детей на питании" />
+                    <TextBlock
+                        Margin="0,8,0,0"
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Foreground="{StaticResource ForegroundPrimary}"
+                        Text="{Binding TotalChildren}" />
                 </StackPanel>
             </Border>
 
-            <Border Grid.Column="2" Margin="0,0,8,0" Style="{StaticResource CardBorderStyle}">
+            <Border
+                Grid.Column="2"
+                Margin="0,0,8,0"
+                Style="{StaticResource CardBorderStyle}">
                 <StackPanel>
-                    <TextBlock Text="Блюд в меню" Foreground="{StaticResource ForegroundSecondary}" />
-                    <TextBlock Text="{Binding DishCount}" Margin="0,8,0,0" FontSize="22" FontWeight="Bold" Foreground="{StaticResource ForegroundPrimary}" />
+                    <TextBlock Foreground="{StaticResource ForegroundSecondary}" Text="Блюд в меню" />
+                    <TextBlock
+                        Margin="0,8,0,0"
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Foreground="{StaticResource ForegroundPrimary}"
+                        Text="{Binding DishCount}" />
                 </StackPanel>
             </Border>
 
             <Border Grid.Column="3" Style="{StaticResource CardBorderStyle}">
                 <StackPanel>
-                    <TextBlock Text="Статус меню" Foreground="{StaticResource ForegroundSecondary}" />
-                    <TextBlock Text="{Binding MenuStatus}" Margin="0,8,0,0" FontSize="22" FontWeight="Bold" Foreground="{Binding MenuStatusBrush}" />
+                    <TextBlock Foreground="{StaticResource ForegroundSecondary}" Text="Статус меню" />
+                    <TextBlock
+                        Margin="0,8,0,0"
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Foreground="{Binding MenuStatusBrush}"
+                        Text="{Binding MenuStatus}" />
                 </StackPanel>
             </Border>
         </Grid>
 
-        <!-- Main content -->
+        <!--  Main content  -->
         <Grid Grid.Row="2" Margin="16,0,16,8">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />
@@ -196,21 +259,52 @@
                 <ColumnDefinition Width="2.2*" />
             </Grid.ColumnDefinitions>
 
-            <!-- Quick actions -->
-            <Border Grid.Row="0" Grid.Column="0" Margin="0,0,8,8" Style="{StaticResource CardBorderStyle}">
+            <!--  Quick actions  -->
+            <Border
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="0,0,8,8"
+                Style="{StaticResource CardBorderStyle}">
                 <StackPanel>
-                    <TextBlock Text="Быстрые действия" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource ForegroundPrimary}" />
+                    <TextBlock
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource ForegroundPrimary}"
+                        Text="Быстрые действия" />
 
-                    <Button Content="Создать меню на сегодня" Margin="0,16,0,8" Style="{StaticResource PrimaryButtonStyle}" Command="{Binding CreateMenuCommand}" />
-                    <Button Content="Открыть меню" Margin="0,0,0,8" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding OpenTodayMenuCommand}" />
-                    <Button Content="Рассчитать продукты" Margin="0,0,0,8" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding CalculateProductsCommand}" />
-                    <Button Content="Создать меню-требование" Margin="0,0,0,8" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding CreateRequirementCommand}" />
-                    <Button Content="Печать формы 299" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding PrintRequirementCommand}" />
+                    <Button
+                        Margin="0,16,0,8"
+                        Command="{Binding CreateMenuCommand}"
+                        Content="Создать меню на сегодня"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button
+                        Margin="0,0,0,8"
+                        Command="{Binding OpenTodayMenuCommand}"
+                        Content="Открыть меню"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button
+                        Margin="0,0,0,8"
+                        Command="{Binding CalculateProductsCommand}"
+                        Content="Рассчитать продукты"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button
+                        Margin="0,0,0,8"
+                        Command="{Binding CreateRequirementCommand}"
+                        Content="Создать меню-требование"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button
+                        Command="{Binding PrintRequirementCommand}"
+                        Content="Печать формы 299"
+                        Style="{StaticResource SecondaryButtonStyle}" />
                 </StackPanel>
             </Border>
 
-            <!-- Menu today -->
-            <Border Grid.Row="0" Grid.Column="1" Margin="0,0,0,8" Style="{StaticResource CardBorderStyle}">
+            <!--  Menu today  -->
+            <Border
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="0,0,0,8"
+                Style="{StaticResource CardBorderStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -218,36 +312,86 @@
                     </Grid.RowDefinitions>
 
                     <DockPanel Grid.Row="0" LastChildFill="False">
-                        <TextBlock Text="Меню на сегодня" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource ForegroundPrimary}" DockPanel.Dock="Left" />
-                        <Button Content="Открыть меню" DockPanel.Dock="Right" Style="{StaticResource SecondaryButtonStyle}" Command="{Binding OpenTodayMenuCommand}" />
+                        <TextBlock
+                            DockPanel.Dock="Left"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource ForegroundPrimary}"
+                            Text="Меню на сегодня" />
+                        <Button
+                            Command="{Binding OpenTodayMenuCommand}"
+                            Content="Открыть меню"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource SecondaryButtonStyle}" />
                     </DockPanel>
 
-                    <DataGrid Grid.Row="1" Margin="0,16,0,0" AutoGenerateColumns="False" ItemsSource="{Binding TodayMenuItems}">
+                    <DataGrid
+                        Grid.Row="1"
+                        Margin="0,16,0,0"
+                        AutoGenerateColumns="False"
+                        ItemsSource="{Binding TodayMenuItems}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Прием пищи" Binding="{Binding MealTypeName}" Width="1.3*" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Блюдо" Binding="{Binding DishName}" Width="2.2*" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Техкарта" Binding="{Binding RecipeCardNumber}" Width="1*" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Выход" Binding="{Binding OutputText}" Width="0.9*" IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="1.3*"
+                                Binding="{Binding MealTypeName}"
+                                Header="Прием пищи"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="2.2*"
+                                Binding="{Binding DishName}"
+                                Header="Блюдо"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="1*"
+                                Binding="{Binding RecipeCardNumber}"
+                                Header="Техкарта"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="0.9*"
+                                Binding="{Binding OutputText}"
+                                Header="Выход"
+                                IsReadOnly="True" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </Border>
 
-            <!-- Warnings -->
-            <Border Grid.Row="1" Grid.Column="0" Margin="0,0,8,0" Style="{StaticResource CardBorderStyle}">
+            <!--  Warnings  -->
+            <Border
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="0,0,8,0"
+                Style="{StaticResource CardBorderStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="Контроль" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource ForegroundPrimary}" />
+                    <TextBlock
+                        Grid.Row="0"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource ForegroundPrimary}"
+                        Text="Контроль" />
 
-                    <ItemsControl Grid.Row="1" Margin="0,16,0,0" ItemsSource="{Binding Warnings}">
+                    <ItemsControl
+                        Grid.Row="1"
+                        Margin="0,16,0,0"
+                        ItemsSource="{Binding Warnings}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Margin="0,0,0,8" Padding="10" CornerRadius="8" Background="#FFF4E5" BorderBrush="#F0B429" BorderThickness="1">
-                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" Foreground="#8D2B0B" />
+                                <Border
+                                    Margin="0,0,0,8"
+                                    Padding="10"
+                                    Background="#FFF4E5"
+                                    BorderBrush="#F0B429"
+                                    BorderThickness="1"
+                                    CornerRadius="8">
+                                    <TextBlock
+                                        Foreground="#8D2B0B"
+                                        Text="{Binding}"
+                                        TextWrapping="Wrap" />
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -255,27 +399,51 @@
                 </Grid>
             </Border>
 
-            <!-- Critical stock + last docs -->
+            <!--  Critical stock + last docs  -->
             <Grid Grid.Row="1" Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1.1*" />
                     <ColumnDefinition Width="1.3*" />
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0" Margin="0,0,8,0" Style="{StaticResource CardBorderStyle}">
+                <Border
+                    Grid.Column="0"
+                    Margin="0,0,8,0"
+                    Style="{StaticResource CardBorderStyle}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="Критические остатки" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource ForegroundPrimary}" />
+                        <TextBlock
+                            Grid.Row="0"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource ForegroundPrimary}"
+                            Text="Критические остатки" />
 
-                        <DataGrid Grid.Row="1" Margin="0,16,0,0" AutoGenerateColumns="False" ItemsSource="{Binding CriticalStockProducts}">
+                        <DataGrid
+                            Grid.Row="1"
+                            Margin="0,16,0,0"
+                            AutoGenerateColumns="False"
+                            ItemsSource="{Binding CriticalStockProducts}">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Продукт" Binding="{Binding ProductName}" Width="1.8*" IsReadOnly="True" />
-                                <DataGridTextColumn Header="Остаток" Binding="{Binding StockText}" Width="1*" IsReadOnly="True" />
-                                <DataGridTextColumn Header="Мин." Binding="{Binding MinStockText}" Width="1*" IsReadOnly="True" />
+                                <DataGridTextColumn
+                                    Width="1.8*"
+                                    Binding="{Binding ProductName}"
+                                    Header="Продукт"
+                                    IsReadOnly="True" />
+                                <DataGridTextColumn
+                                    Width="1*"
+                                    Binding="{Binding StockText}"
+                                    Header="Остаток"
+                                    IsReadOnly="True" />
+                                <DataGridTextColumn
+                                    Width="1*"
+                                    Binding="{Binding MinStockText}"
+                                    Header="Мин."
+                                    IsReadOnly="True" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -288,13 +456,34 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="Последние документы" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource ForegroundPrimary}" />
+                        <TextBlock
+                            Grid.Row="0"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource ForegroundPrimary}"
+                            Text="Последние документы" />
 
-                        <DataGrid Grid.Row="1" Margin="0,16,0,0" AutoGenerateColumns="False" ItemsSource="{Binding LastDocuments}">
+                        <DataGrid
+                            Grid.Row="1"
+                            Margin="0,16,0,0"
+                            AutoGenerateColumns="False"
+                            ItemsSource="{Binding LastDocuments}">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Документ" Binding="{Binding DocumentName}" Width="2*" IsReadOnly="True" />
-                                <DataGridTextColumn Header="Дата" Binding="{Binding DateText}" Width="1*" IsReadOnly="True" />
-                                <DataGridTextColumn Header="Статус" Binding="{Binding StatusName}" Width="1.2*" IsReadOnly="True" />
+                                <DataGridTextColumn
+                                    Width="2*"
+                                    Binding="{Binding DocumentName}"
+                                    Header="Документ"
+                                    IsReadOnly="True" />
+                                <DataGridTextColumn
+                                    Width="1*"
+                                    Binding="{Binding DateText}"
+                                    Header="Дата"
+                                    IsReadOnly="True" />
+                                <DataGridTextColumn
+                                    Width="1.2*"
+                                    Binding="{Binding StatusName}"
+                                    Header="Статус"
+                                    IsReadOnly="True" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -302,7 +491,7 @@
             </Grid>
         </Grid>
 
-        <!-- Status bar -->
+        <!--  Status bar  -->
         <StatusBar Grid.Row="3" Margin="16,0,16,16">
             <StatusBarItem>
                 <TextBlock Text="{Binding StatusMessage}" />

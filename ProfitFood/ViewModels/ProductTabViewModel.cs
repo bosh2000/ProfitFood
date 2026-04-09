@@ -1,18 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using ProfitFood.DAL.Repository.Interfaces;
-using ProfitFood.UI.Commands;
-using ProfitFood.UI.Models.View;
-using ProfitFood.UI.ViewModels.Base;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
-namespace ProfitFood.UI.ViewModels
+﻿namespace ProfitFood.UI.ViewModels
 {
     ///// <summary>
     ///// Вкладка Продукты в Tab в основном экране

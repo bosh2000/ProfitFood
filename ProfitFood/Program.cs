@@ -1,15 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProfitFood.Applications.Services.Interfaces;
 using ProfitFood.DAL.Repository.Implementation;
 using ProfitFood.DAL.Repository.Interfaces;
-using ProfitFood.Infrastructure.Services.Interfaces;
-using ProfitFood.Infrastructure.Services.References;
 using ProfitFood.UI.Mappings;
 using ProfitFood.UI.ViewModels;
 using ProfitFood.UI.ViewModels.Reference;
 using ProfitFood.UI.ViewModels.Reference.Units;
 using ProfitFoot.Infrastructure;
+using ProfitFood.Applications.Services.References;
+using ProfitFood.Infrastructure.Repository.Interfaces;
+using ProfitFood.Infrastructure.Repository.Implementation;
 
 namespace ProfitFood.UI
 {
@@ -24,9 +26,9 @@ namespace ProfitFood.UI
                     services.AddDbContext<ProfitFoodDbContext>(
                         option => option.UseSqlite("Data Source=D:\\DbProfitFood\\profitfood.db")
                         );
-                    services.AddAutoMapper(typeof(AutoMapperProfile));
-                    services.AddScoped<IProfitDbRepository, ProfitDbRepository>();
+                    services.AddAutoMapper(typeof(UnitMappingProfile));
                     services.AddScoped<IUnitAppService, UnitAppService>();
+                    services.AddScoped<IDbRepository, DbRepository>();
                     services.AddScoped<MainWindow>();
                     services.AddScoped<MainWindowViewModel>();
                     services.AddScoped<UnitsReferenceViewModel>();

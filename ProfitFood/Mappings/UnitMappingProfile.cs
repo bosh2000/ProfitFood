@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using ProfitFood.Applications.Dto.References;
+using ProfitFood.Domain.Entities.References;
+using ProfitFood.Domain.ModelsViewModels;
 
 namespace ProfitFood.UI.Mappings
 {
-    class UnitMappingProfile
+    public class UnitMappingProfile : Profile
     {
+        public UnitMappingProfile()
+        {
+            CreateMap<UnitEditDto, UnitEditModel>().ReverseMap();
+            CreateMap<UnitItemDto, UnitListItemViewModel>().ReverseMap();
+            CreateMap<UnitItemDto, Unit>().ReverseMap();
+        }
     }
 }

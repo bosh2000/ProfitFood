@@ -5,10 +5,10 @@ using System.Linq.Expressions;
 
 namespace ProfitFood.Infrastructure.Repository.Implementation
 {
-    internal class RepositoryBase<T> : IRepositoryBase<T> where T : class
+    public class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
         private readonly ProfitFoodDbContext _dbContext;
-        private readonly DbSet<T> _dbSet;
+        public readonly DbSet<T> _dbSet;
 
         public RepositoryBase(ProfitFoodDbContext context)
         {

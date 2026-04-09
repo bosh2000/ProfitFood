@@ -5,17 +5,17 @@ using ProfitFoot.Infrastructure;
 
 namespace ProfitFood.DAL.Repository.Implementation
 {
-    public class ProfitDbRepository : IProfitDbRepository
-    {
-        public readonly ProfitFoodDbContext _context;
+    //public class ProfitDbRepository : IProfitDbRepository
+    //{
+    //    public readonly ProfitFoodDbContext _context;
 
-        public ProfitDbRepository(ProfitFoodDbContext context)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-        }
+    //    public ProfitDbRepository(ProfitFoodDbContext context)
+    //    {
+    //        _context = context ?? throw new ArgumentNullException(nameof(context));
+    //    }
 
-        public IUnitRepository UnitRepository => new UnitRepository(_context);
-        public IProductCategoryRepository ProductGroupRepository => new ProductGroupRepositiry(_context);
-        public IProductRepository ProductRepository => new ProductRepository(_context);
-    }
+    //    public IUnitRepository UnitRepository => new UnitRepository(_context);
+    //    public IProductCategoryRepository ProductGroupRepository => new ProductGroupRepositiry(_context);
+    //    public IProductRepository ProductRepository => new ProductRepository(_context);
+    //}
 }

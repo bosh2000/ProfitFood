@@ -1,5 +1,7 @@
-﻿using ProfitFood.Domain.ModelsViewModels;
-using ProfitFood.Infrastructure.Services.Interfaces;
+﻿using AutoMapper;
+using ProfitFood.Applications.Dto.References;
+using ProfitFood.Applications.Services.Interfaces;
+using ProfitFood.Domain.ModelsViewModels;
 using ProfitFood.UI.Views.Reference.Base;
 
 namespace ProfitFood.UI.ViewModels.Reference.Units
@@ -8,9 +10,11 @@ namespace ProfitFood.UI.ViewModels.Reference.Units
         : ReferenceCrudViewModelBase<UnitListItemViewModel, UnitEditModel>
     {
         private readonly IUnitAppService _unitAppService;
+        private readonly IMapper _mapper;
 
-        public UnitsReferenceViewModel(IUnitAppService unitAppService)
+        public UnitsReferenceViewModel(IUnitAppService unitAppService, IMapper mapper)
         {
+            _mapper = mapper;
             _unitAppService = unitAppService;
             Title = "Единицы измерения";
 
@@ -30,7 +34,8 @@ namespace ProfitFood.UI.ViewModels.Reference.Units
             {
                 IsBusy = true;
 
-                var items = await _unitAppService.GetAllAsync();
+                var itemsDto = await _unitAppService.GetAllAsync();
+                var items = itemsDto.Select(x => _mapper.Map<UnitListItemViewModel>(x)).ToList();
                 ReplaceItems(items);
 
                 StatusMessage = $"Загружено записей: {Items.Count}.";
@@ -51,10 +56,10 @@ namespace ProfitFood.UI.ViewModels.Reference.Units
             {
                 IsBusy = true;
 
-                var items = string.IsNullOrWhiteSpace(SearchText)
+                var itemsDto = string.IsNullOrWhiteSpace(SearchText)
                     ? await _unitAppService.GetAllAsync()
                     : await _unitAppService.SearchAsync(SearchText);
-
+                var items = itemsDto.Select(x => _mapper.Map<UnitListItemViewModel>(x)).ToList();
                 ReplaceItems(items);
                 StatusMessage = $"Найдено записей: {Items.Count}.";
             }
@@ -93,7 +98,8 @@ namespace ProfitFood.UI.ViewModels.Reference.Units
 
         protected override async Task SaveCoreAsync(UnitEditModel model)
         {
-            await _unitAppService.SaveAsync(model);
+            var modelDto = _mapper.Map<UnitEditDto>(model);
+            await _unitAppService.SaveAsync(modelDto);
         }
 
         protected override async Task DeleteCoreAsync(UnitListItemViewModel item)

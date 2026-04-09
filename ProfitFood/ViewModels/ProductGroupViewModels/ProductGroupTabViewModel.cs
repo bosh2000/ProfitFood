@@ -1,17 +1,4 @@
-﻿using AutoMapper;
-using ProfitFood.DAL.Repository.Interfaces;
-using ProfitFood.Model.Infrastructure;
-using ProfitFood.UI.Commands;
-using ProfitFood.UI.Models.View;
-using ProfitFood.UI.ViewModels.Base;
-using ProfitFood.UI.ViewModels.BaseUnitStorageViewModels;
-using ProfitFood.UI.Views.BaseUnitStorage;
-using ProfitFood.UI.Views.ProductGroup;
-using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
-
-namespace ProfitFood.UI.ViewModels.ProductGroupViewModels
+﻿namespace ProfitFood.UI.ViewModels.ProductGroupViewModels
 {
     //public class ProductGroupTabViewModel : ViewModel
     //{

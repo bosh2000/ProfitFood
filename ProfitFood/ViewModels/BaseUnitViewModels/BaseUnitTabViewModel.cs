@@ -1,15 +1,4 @@
-﻿using AutoMapper;
-using ProfitFood.DAL.Repository.Interfaces;
-using ProfitFood.Model.Infrastructure;
-using ProfitFood.UI.Commands;
-using ProfitFood.UI.Models.View;
-using ProfitFood.UI.ViewModels.Base;
-using ProfitFood.UI.Views.BaseUnit;
-using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
-
-namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
+﻿namespace ProfitFood.UI.ViewModels.BaseUnitViewModels
 {
     ///// <summary>
     ///// Вкладка Базовая единица измерения в Tab в основом экране

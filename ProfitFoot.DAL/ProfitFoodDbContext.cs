@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProfitFood.DAL.Migrations;
-using ProfitFood.Domain.Entities.References;
-using ProfitFood.Domain.Entities;
 using ProfitFood.Domain.Entities.Menus;
+using ProfitFood.Domain.Entities.References;
 using ProfitFood.Domain.Entities.Recipes;
 using ProfitFood.Domain.Entities.Documents;
+using ProfitFood.Domain.Entities;
 
 namespace ProfitFoot.Infrastructure
 {
@@ -40,7 +39,7 @@ namespace ProfitFoot.Infrastructure
         public DbSet<StockDocument> StockDocuments => Set<StockDocument>();
         public DbSet<StockDocumentItem> StockDocumentItems => Set<StockDocumentItem>();
         public DbSet<StockBalance> StockBalances => Set<StockBalance>();
-        public DbSet<AppSettings> AppSettings => Set<AppSettings>();
+        public DbSet<ProfitFood.Domain.Entities.AppSettings> AppSettings => Set<AppSettings>();
         public DbSet<DatabaseSettings> DatabaseSettings => Set<DatabaseSettings>();
         public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
