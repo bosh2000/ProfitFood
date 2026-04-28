@@ -1,15 +1,11 @@
 ﻿using ProfitFood.UI.ViewModels;
-using System;
-using System.Collections.Generic;
+using ProfitFood.UI.ViewModels.Reference;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ProfitFood.UI.Views.Reference.Base
 {
-    public abstract class ReferenceCrudViewModelBase<TListItem, TEditModel> : ViewModelBase
+    public abstract class ReferenceCrudViewModelBase<TListItem, TEditModel> : ViewModelBase, IInitializableViewModel
         where TListItem : class
         where TEditModel : class, new()
     {
@@ -27,7 +23,6 @@ namespace ProfitFood.UI.Views.Reference.Base
             Items = new ObservableCollection<TListItem>();
 
             CreateCommand = new RelayCommand(_ => Create());
-            EditCommand = new RelayCommand(_ => Edit(), _ => SelectedItem is not null);
             DeleteCommand = new RelayCommand(async _ => await DeleteAsync(), _ => SelectedItem is not null && !IsBusy);
             SaveCommand = new RelayCommand(async _ => await SaveAsync(), _ => !IsBusy);
             CancelCommand = new RelayCommand(_ => Cancel());
@@ -35,12 +30,30 @@ namespace ProfitFood.UI.Views.Reference.Base
             SearchCommand = new RelayCommand(async _ => await SearchAsync(), _ => !IsBusy);
         }
 
+        public virtual async Task IInitializeAsync()
+        {
+            await LoadAsync();
+        }
+
         public ObservableCollection<TListItem> Items { get; }
 
         public TListItem? SelectedItem
         {
             get => _selectedItem;
-            set => SetProperty(ref _selectedItem, value);
+            set
+            {
+                if (SetProperty(ref _selectedItem, value))
+                {
+                    if (value is not null)
+                    {
+                        EditModel = BuildEditModel(value);
+                        IsCreateMode = false;
+                        IsEditMode = true;
+                        StatusMessage = "Запись выбрана для редактирования.";
+                        UpdateCommandState();
+                    }
+                }
+            }
         }
 
         public TEditModel EditModel
@@ -70,7 +83,11 @@ namespace ProfitFood.UI.Views.Reference.Base
         public bool IsBusy
         {
             get => _isBusy;
-            protected set => SetProperty(ref _isBusy, value);
+            protected set
+            {
+                SetProperty(ref _isBusy, value);
+                UpdateCommandState();
+            }
         }
 
         public bool IsEditMode
@@ -86,7 +103,6 @@ namespace ProfitFood.UI.Views.Reference.Base
         }
 
         public ICommand CreateCommand { get; }
-        public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
@@ -116,17 +132,6 @@ namespace ProfitFood.UI.Views.Reference.Base
             IsCreateMode = true;
             IsEditMode = true;
             StatusMessage = "Создание новой записи.";
-        }
-
-        protected virtual void Edit()
-        {
-            if (SelectedItem is null)
-                return;
-
-            EditModel = BuildEditModel(SelectedItem);
-            IsCreateMode = false;
-            IsEditMode = true;
-            StatusMessage = "Редактирование записи.";
         }
 
         protected virtual async Task SaveAsync()
@@ -191,6 +196,12 @@ namespace ProfitFood.UI.Views.Reference.Base
 
             foreach (var item in items)
                 Items.Add(item);
+        }
+
+        protected void UpdateCommandState()
+        {
+            (DeleteCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
     }
 }

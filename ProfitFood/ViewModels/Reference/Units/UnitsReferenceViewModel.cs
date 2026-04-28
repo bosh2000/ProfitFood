@@ -96,15 +96,17 @@ namespace ProfitFood.UI.ViewModels.Reference.Units
             };
         }
 
-        protected override async Task SaveCoreAsync(UnitEditModel model)
+        protected override async Task SaveCoreAsync(UnitEditModel item)
         {
-            var modelDto = _mapper.Map<UnitEditDto>(model);
+            var modelDto = _mapper.Map<UnitItemDto>(item);
             await _unitAppService.SaveAsync(modelDto);
+            EditModel = new UnitEditModel();
         }
 
         protected override async Task DeleteCoreAsync(UnitListItemViewModel item)
         {
-            await _unitAppService.DeleteAsync(item.Id);
+            var modelDto = _mapper.Map<UnitItemDto>(item);
+            await _unitAppService.DeleteAsync(modelDto);
         }
     }
 }

@@ -17,9 +17,10 @@ namespace ProfitFood.Applications.Services.References
             _mapper = mapper;
         }
 
-        public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(UnitItemDto model, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            Unit unitItemEntity = await _dbRepository.unitRepository.FirstOfDefaultAsync(x => x.Id == model.Id);
+            await _dbRepository.unitRepository.DeleteAsync(unitItemEntity);
         }
 
         public async Task<IReadOnlyCollection<UnitItemDto>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -28,9 +29,10 @@ namespace ProfitFood.Applications.Services.References
             return unitListEntity.Select(x => _mapper.Map<UnitItemDto>(x)).ToList();
         }
 
-        public Task SaveAsync(UnitEditDto model, CancellationToken cancellationToken = default)
+        public async Task SaveAsync(UnitItemDto model, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            Unit unitItemEntity = _mapper.Map<Unit>(model);
+            await _dbRepository.unitRepository.CreateASync(unitItemEntity);
         }
 
         public Task<IReadOnlyCollection<UnitItemDto>> SearchAsync(string searchText, CancellationToken cancellationToken = default)

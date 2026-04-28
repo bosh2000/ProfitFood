@@ -9,6 +9,7 @@ namespace ProfitFood.UI.Mappings
     {
         public UnitMappingProfile()
         {
+            CreateMap<UnitEditModel, UnitItemDto>().ReverseMap();
             CreateMap<UnitEditDto, UnitEditModel>().ReverseMap();
             CreateMap<UnitItemDto, UnitListItemViewModel>().ReverseMap();
             CreateMap<UnitItemDto, Unit>().ReverseMap();

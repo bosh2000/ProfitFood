@@ -8,8 +8,8 @@ namespace ProfitFood.Applications.Services.Interfaces
 
         Task<IReadOnlyCollection<UnitItemDto>> SearchAsync(string searchText, CancellationToken cancellationToken = default);
 
-        Task SaveAsync(UnitEditDto model, CancellationToken cancellationToken = default);
+        Task SaveAsync(UnitItemDto model, CancellationToken cancellationToken = default);
 
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+        Task DeleteAsync(UnitItemDto model, CancellationToken cancellationToken = default);
     }
 }

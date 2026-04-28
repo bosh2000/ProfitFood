@@ -10,5 +10,6 @@ namespace ProfitFood.Infrastructure.Repository.Interfaces
     public interface IDbRepository
     {
         IUnitRepository unitRepository { get; }
+        IProductCategoryRepository productCategoryRepository { get; }
     }
 }

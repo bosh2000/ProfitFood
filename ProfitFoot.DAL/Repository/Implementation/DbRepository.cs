@@ -23,5 +23,6 @@ namespace ProfitFood.Infrastructure.Repository.Implementation
         }
 
         public IUnitRepository unitRepository => new UnitRepository(_context, _mapper);
+        public IProductCategoryRepository productCategoryRepository => new ProductCategoryRepository(_context, _mapper);
     }
 }

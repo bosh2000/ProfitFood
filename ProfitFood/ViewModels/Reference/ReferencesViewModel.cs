@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ProfitFood.UI.ViewModels.Reference.ProductCategories;
 using ProfitFood.UI.ViewModels.Reference.Units;
 using ProfitFood.UI.Views.Reference;
 using System.Collections.ObjectModel;
@@ -53,12 +54,12 @@ namespace ProfitFood.UI.ViewModels.Reference
             SelectedSection = Sections.FirstOrDefault();
         }
 
-        private void OpenSection(ReferenceSectionItem section)
+        private async void OpenSection(ReferenceSectionItem section)
         {
             CurrentReferenceViewModel = section.Key switch
             {
                 "Units" => _serviceProvider.GetRequiredService<UnitsReferenceViewModel>(),
-                "ProductCategories" => new ProductCategoriesReferenceViewModel(),
+                "ProductCategories" => _serviceProvider.GetRequiredService<ProductCategoriesViewModel>(),
                 "Products" => new ProductsReferenceViewModel(),
                 "AgeGroups" => new AgeGroupsReferenceViewModel(),
                 "ChildGroups" => new ChildGroupsReferenceViewModel(),
@@ -68,6 +69,10 @@ namespace ProfitFood.UI.ViewModels.Reference
                 "StorageLocations" => new StorageLocationsReferenceViewModel(),
                 _ => null
             };
+            if (CurrentReferenceViewModel is IInitializableViewModel initializableViewModel)
+            {
+                await initializableViewModel.InitializeAsync();
+            }
         }
     }
 }
