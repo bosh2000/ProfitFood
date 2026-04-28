@@ -17,27 +17,87 @@ namespace ProfitFood.Applications.Services.References
             _mapper = mapper;
         }
 
-        public async Task DeleteAsync(UnitItemDto model, CancellationToken cancellationToken = default)
-        {
-            Unit unitItemEntity = await _dbRepository.unitRepository.FirstOfDefaultAsync(x => x.Id == model.Id);
-            await _dbRepository.unitRepository.DeleteAsync(unitItemEntity);
-        }
-
-        public async Task<IReadOnlyCollection<UnitItemDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyCollection<UnitItemDto>> GetAllAsync(
+            CancellationToken cancellationToken = default)
         {
             var unitListEntity = await _dbRepository.unitRepository.ToListAsync();
-            return unitListEntity.Select(x => _mapper.Map<UnitItemDto>(x)).ToList();
+
+            return unitListEntity
+                .OrderBy(x => x.Name)
+                .Select(x => _mapper.Map<UnitItemDto>(x))
+                .ToList();
         }
 
-        public async Task SaveAsync(UnitItemDto model, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyCollection<UnitItemDto>> SearchAsync(
+            string searchText,
+            CancellationToken cancellationToken = default)
         {
-            Unit unitItemEntity = _mapper.Map<Unit>(model);
-            await _dbRepository.unitRepository.CreateASync(unitItemEntity);
+            if (string.IsNullOrWhiteSpace(searchText))
+                return await GetAllAsync(cancellationToken);
+
+            var normalizedSearchText = searchText.Trim().ToLower();
+
+            var units = await _dbRepository.unitRepository.ConditionToListAsync(x =>
+                x.Name.ToLower().Contains(normalizedSearchText));
+
+            return units
+                .OrderBy(x => x.Name)
+                .Select(x => _mapper.Map<UnitItemDto>(x))
+                .ToList();
         }
 
-        public Task<IReadOnlyCollection<UnitItemDto>> SearchAsync(string searchText, CancellationToken cancellationToken = default)
+        public async Task SaveAsync(
+            UnitItemDto model,
+            CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (string.IsNullOrWhiteSpace(model.Name))
+                throw new InvalidOperationException("Наименование единицы измерения не может быть пустым.");
+
+            var name = model.Name.Trim();
+
+            if (model.Id == Guid.Empty)
+            {
+                var newEntity = _mapper.Map<Unit>(model);
+                newEntity.Name = name;
+
+                await _dbRepository.unitRepository.CreateASync(newEntity);
+                return;
+            }
+
+            var existingEntity = await _dbRepository.unitRepository
+                .FirstOfDefaultAsync(x => x.Id == model.Id);
+
+            if (existingEntity is null)
+            {
+                var newEntity = _mapper.Map<Unit>(model);
+                newEntity.Name = name;
+
+                await _dbRepository.unitRepository.CreateASync(newEntity);
+                return;
+            }
+
+            existingEntity.Name = name;
+
+            await _dbRepository.unitRepository.UpdateAsync(existingEntity);
+        }
+
+        public async Task DeleteAsync(
+            UnitItemDto model,
+            CancellationToken cancellationToken = default)
+        {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            var unitItemEntity = await _dbRepository.unitRepository
+                .FirstOfDefaultAsync(x => x.Id == model.Id);
+
+            if (unitItemEntity is null)
+                throw new InvalidOperationException("Единица измерения не найдена.");
+
+            await _dbRepository.unitRepository.DeleteAsync(unitItemEntity);
         }
     }
 }

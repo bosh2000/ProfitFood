@@ -78,7 +78,7 @@
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0" Style="{StaticResource PanelCardBorderStyle}">
-                <TreeView ItemsSource="{Binding Categories}">
+                <TreeView ItemsSource="{Binding Categories}" SelectedItemChanged="TreeView_SelectedItemChanged">
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                             <TextBlock Text="{Binding Name}" />

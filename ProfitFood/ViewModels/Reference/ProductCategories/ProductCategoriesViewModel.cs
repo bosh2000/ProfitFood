@@ -57,6 +57,7 @@ namespace ProfitFood.UI.ViewModels.Reference.ProductCategories
 
                         StatusMessage = "Категория выбрана.";
                     }
+                    RaiseCommandsCanExecuteChanged();
                 }
             }
         }
@@ -76,7 +77,7 @@ namespace ProfitFood.UI.ViewModels.Reference.ProductCategories
         public bool IsBusy
         {
             get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
+            set { SetProperty(ref _isBusy, value); RaiseCommandsCanExecuteChanged(); }
         }
 
         public ICommand AddRootCommand { get; }
@@ -228,6 +229,13 @@ namespace ProfitFood.UI.ViewModels.Reference.ProductCategories
             }
 
             return item;
+        }
+
+        private void RaiseCommandsCanExecuteChanged()
+        {
+            (AddChildCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (DeleteCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
     }
 }
