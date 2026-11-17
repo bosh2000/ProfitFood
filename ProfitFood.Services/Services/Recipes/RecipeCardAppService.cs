@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using ProfitFood.Applications.Dto.Recipes;
 using ProfitFood.Applications.Services.Interfaces;
 using ProfitFood.Domain.Entities.Recipes;
+using ProfitFood.Domain.Entities.References;
 using ProfitFood.Infrastructure.Repository.Interfaces;
 using ProfitFoot.Infrastructure;
 
@@ -225,6 +226,7 @@ namespace ProfitFood.Infrastructure.Services.Recipes
             version.IsApproved = versionModel.IsApproved;
 
             SyncIngredients(version, versionModel);
+            SyncOutputs(version, versionModel);
         }
 
         /// <summary>
@@ -264,6 +266,39 @@ namespace ProfitFood.Infrastructure.Services.Recipes
                 target.SortOrder = ingredient.SortOrder > 0 ? ingredient.SortOrder : sortOrder;
 
                 sortOrder++;
+            }
+        }
+
+        /// <summary>
+        /// Синхронизирует выходы по возрастным группам: обновляет существующие, добавляет новые и убирает лишние.
+        /// </summary>
+        private static void SyncOutputs(RecipeCardVersion version, RecipeCardVersionDto versionModel)
+        {
+            var incomingIds = versionModel.Outputs
+                .Where(x => x.Id != Guid.Empty)
+                .Select(x => x.Id)
+                .ToHashSet();
+
+            foreach (var removed in version.DishOutputs.Where(x => !incomingIds.Contains(x.Id)).ToList())
+            {
+                version.DishOutputs.Remove(removed);
+            }
+
+            foreach (var output in versionModel.Outputs)
+            {
+                var target = output.Id == Guid.Empty
+                    ? null
+                    : version.DishOutputs.FirstOrDefault(x => x.Id == output.Id);
+
+                if (target is null)
+                {
+                    target = new DishOutput { RecipeCardVersionId = version.Id };
+                    version.DishOutputs.Add(target);
+                }
+
+                target.AgeGroupId = output.AgeGroupId;
+                target.OutputQuantity = output.OutputQuantity;
+                target.UnitId = output.UnitId;
             }
         }
 
@@ -314,6 +349,31 @@ namespace ProfitFood.Infrastructure.Services.Recipes
                     throw new InvalidOperationException("Количество нетто в строке ингредиента должно быть больше нуля.");
                 }
             }
+
+            var ageGroups = new HashSet<Guid>();
+
+            foreach (var output in model.Version.Outputs)
+            {
+                if (output.AgeGroupId == Guid.Empty)
+                {
+                    throw new InvalidOperationException("В строке выхода не выбрана возрастная группа.");
+                }
+
+                if (!ageGroups.Add(output.AgeGroupId))
+                {
+                    throw new InvalidOperationException("Возрастная группа указана в выходах дважды.");
+                }
+
+                if (output.OutputQuantity <= 0m)
+                {
+                    throw new InvalidOperationException("Выход для возрастной группы должен быть больше нуля.");
+                }
+
+                if (output.UnitId == Guid.Empty)
+                {
+                    throw new InvalidOperationException("В строке выхода не выбрана единица измерения.");
+                }
+            }
         }
 
         /// <summary>
@@ -333,7 +393,12 @@ namespace ProfitFood.Infrastructure.Services.Recipes
                 .AsNoTracking()
                 .ToDictionaryAsync(x => x.Id, x => x.Name, cancellationToken);
 
-            return new RecipeLookups(dishNames, productNames, unitNames);
+            // Выход блюда зависит от возрастной группы, поэтому нужны её наименования.
+            var ageGroupNames = await context.AgeGroups
+                .AsNoTracking()
+                .ToDictionaryAsync(x => x.Id, x => x.Name, cancellationToken);
+
+            return new RecipeLookups(dishNames, productNames, unitNames, ageGroupNames);
         }
 
         private static RecipeCardDto MapToDetailDto(RecipeCard card, RecipeLookups lookups)
@@ -371,6 +436,22 @@ namespace ProfitFood.Infrastructure.Services.Recipes
                     : string.Empty,
                 Description = currentVersion.Description,
                 IsApproved = currentVersion.IsApproved,
+                Outputs = currentVersion.DishOutputs
+                    .OrderBy(x => x.OutputQuantity)
+                    .Select(output => new DishOutputDto
+                    {
+                        Id = output.Id,
+                        AgeGroupId = output.AgeGroupId,
+                        AgeGroupName = lookups.AgeGroupNames.TryGetValue(output.AgeGroupId, out var ageGroupName)
+                            ? ageGroupName
+                            : string.Empty,
+                        OutputQuantity = output.OutputQuantity,
+                        UnitId = output.UnitId,
+                        UnitName = lookups.UnitNames.TryGetValue(output.UnitId, out var outputUnitName)
+                            ? outputUnitName
+                            : string.Empty
+                    })
+                    .ToList(),
                 Ingredients = currentVersion.Ingredients
                     .OrderBy(x => x.SortOrder)
                     .Select(ingredient => new RecipeIngredientDto
@@ -436,6 +517,7 @@ namespace ProfitFood.Infrastructure.Services.Recipes
         private sealed record RecipeLookups(
             IReadOnlyDictionary<Guid, string> DishNames,
             IReadOnlyDictionary<Guid, string> ProductNames,
-            IReadOnlyDictionary<Guid, string> UnitNames);
+            IReadOnlyDictionary<Guid, string> UnitNames,
+            IReadOnlyDictionary<Guid, string> AgeGroupNames);
     }
 }

@@ -68,6 +68,9 @@ namespace ProfitFood.Infrastructure.Repository.Implementation
         public IRecipeCardVersionRepository recipeCardVersionRepository => new RecipeCardVersionRepository(_contextFactory);
 
         /// <inheritdoc />
+        public IMenuRequirementRepository menuRequirementRepository => new MenuRequirementRepository(_contextFactory);
+
+        /// <inheritdoc />
         public IStockBalanceRepository stockBalanceRepository => new StockBalanceRepository(_contextFactory);
 
         /// <inheritdoc />

@@ -36,6 +36,7 @@ namespace ProfitFood.UI.ViewModels
                 new("Техкарты", typeof(RecipeCardsViewModel)),
                 new("Склад", typeof(StockViewModel)),
                 new("Документы", typeof(DocumentsViewModel)),
+                new("Требования", typeof(MenuRequirementsViewModel)),
                 new("Справочники", typeof(ReferencesViewModel))
             };
 

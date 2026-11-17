@@ -47,6 +47,10 @@
                 <views:DocumentsView />
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type vm:MenuRequirementsViewModel}">
+                <views:MenuRequirementsView />
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type vmReferenceViewModel:ReferencesViewModel}">
                 <views:ReferencesView />
             </DataTemplate>

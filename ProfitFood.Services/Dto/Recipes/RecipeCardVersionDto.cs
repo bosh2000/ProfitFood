@@ -15,5 +15,8 @@
 
         /// <summary>Ингредиенты версии.</summary>
         public List<RecipeIngredientDto> Ingredients { get; set; } = new();
+
+        /// <summary>Выходы блюда по возрастным группам.</summary>
+        public List<DishOutputDto> Outputs { get; set; } = new();
     }
 }

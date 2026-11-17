@@ -163,6 +163,46 @@
                             Foreground="#627D98"
                             Text="{Binding EditModel.StatusName, StringFormat=Статус: {0}}" />
 
+                        <!--  Посещаемость по группам: план берётся из справочника, факт заполняется вручную  -->
+                        <TextBlock
+                            Margin="0,16,0,6"
+                            FontSize="15"
+                            FontWeight="SemiBold"
+                            Foreground="#334E68"
+                            Text="Посещаемость" />
+                        <DataGrid
+                            MaxHeight="180"
+                            AutoGenerateColumns="False"
+                            CanUserAddRows="False"
+                            CanUserDeleteRows="False"
+                            ItemsSource="{Binding AttendanceRows}"
+                            Style="{StaticResource AppDataGridStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn
+                                    Width="2*"
+                                    Binding="{Binding ChildGroupName}"
+                                    Header="Группа"
+                                    IsReadOnly="True" />
+                                <DataGridTextColumn
+                                    Width="1*"
+                                    Binding="{Binding PlannedCount}"
+                                    Header="План"
+                                    IsReadOnly="True" />
+                                <DataGridTextColumn
+                                    Width="1*"
+                                    Binding="{Binding ActualCount, UpdateSourceTrigger=PropertyChanged}"
+                                    Header="Факт" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Button
+                            Width="200"
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding SaveAttendanceCommand}"
+                            Content="Сохранить посещаемость"
+                            Style="{StaticResource HoverPrimaryButtonStyle}" />
+
                         <StackPanel Margin="0,20,0,0" Orientation="Horizontal">
                             <Button
                                 Width="120"

@@ -9,6 +9,8 @@ using ProfitFood.Domain.Entities.Menus;
 using ProfitFood.Domain.Entities.References;
 using ProfitFood.Infrastructure.Repository.Interfaces;
 using ProfitFood.Infrastructure.Services.Menus;
+using Microsoft.EntityFrameworkCore;
+using ProfitFoot.Infrastructure;
 using System.Linq.Expressions;
 using Xunit;
 
@@ -19,6 +21,7 @@ namespace ProfitFood.Tests.Applications.Services.Menus
         private readonly Mock<IDbRepository> _dbRepositoryMock;
         private readonly Mock<IDailyMenuRepository> _dailyMenuRepositoryMock;
         private readonly Mock<ISeasonRepository> _seasonRepositoryMock;
+        private readonly Mock<IDbContextFactory<ProfitFoodDbContext>> _contextFactoryMock;
 
         public DailyMenuAppServiceTests()
         {
@@ -28,6 +31,7 @@ namespace ProfitFood.Tests.Applications.Services.Menus
 
             _dbRepositoryMock.Setup(x => x.dailyMenuRepository).Returns(_dailyMenuRepositoryMock.Object);
             _dbRepositoryMock.Setup(x => x.seasonRepository).Returns(_seasonRepositoryMock.Object);
+            _contextFactoryMock = new Mock<IDbContextFactory<ProfitFoodDbContext>>();
         }
 
         [Fact]
@@ -301,6 +305,9 @@ namespace ProfitFood.Tests.Applications.Services.Menus
         }
 
         private IDailyMenuAppService CreateService()
-            => new DailyMenuAppService(_dbRepositoryMock.Object, NullLogger<DailyMenuAppService>.Instance);
+            => new DailyMenuAppService(
+                _dbRepositoryMock.Object,
+                _contextFactoryMock.Object,
+                NullLogger<DailyMenuAppService>.Instance);
     }
 }

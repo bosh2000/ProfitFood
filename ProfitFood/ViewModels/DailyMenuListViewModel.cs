@@ -14,6 +14,7 @@ namespace ProfitFood.UI.ViewModels
     {
         private readonly IDailyMenuAppService _service;
         private readonly ISeasonAppService _seasonService;
+        private readonly IDailyMenuAttendanceAppService _attendanceService;
 
         private DailyMenuListItemDto? _selectedItem;
         private DailyMenuListItemDto _editModel = new();
@@ -30,13 +31,18 @@ namespace ProfitFood.UI.ViewModels
         /// <param name="service">Сервис ежедневных меню.</param>
         /// <param name="seasonService">Сервис справочника сезонов для выпадающего списка.</param>
         /// <exception cref="ArgumentNullException">Возникает, если сервисы не переданы.</exception>
-        public DailyMenuListViewModel(IDailyMenuAppService service, ISeasonAppService seasonService)
+        public DailyMenuListViewModel(
+            IDailyMenuAppService service,
+            ISeasonAppService seasonService,
+            IDailyMenuAttendanceAppService attendanceService)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _seasonService = seasonService ?? throw new ArgumentNullException(nameof(seasonService));
+            _attendanceService = attendanceService ?? throw new ArgumentNullException(nameof(attendanceService));
 
             Items = new ObservableCollection<DailyMenuListItemDto>();
             SeasonOptions = new ObservableCollection<SeasonDto>();
+            AttendanceRows = new ObservableCollection<DailyMenuAttendanceDto>();
 
             RefreshCommand = new RelayCommand(async _ => await LoadAsync(), _ => !IsBusy);
             SearchCommand = new RelayCommand(async _ => await SearchAsync(), _ => !IsBusy);
@@ -44,6 +50,9 @@ namespace ProfitFood.UI.ViewModels
             CreateCommand = new RelayCommand(_ => StartCreate(), _ => !IsBusy);
             SaveCommand = new RelayCommand(async _ => await SaveAsync(), _ => !IsBusy);
             CancelCommand = new RelayCommand(_ => Cancel(), _ => !IsBusy);
+            SaveAttendanceCommand = new RelayCommand(
+                async _ => await SaveAttendanceAsync(),
+                _ => !IsBusy && EditModel.Id != Guid.Empty);
         }
 
         /// <summary>Меню, начиная с самого свежего.</summary>
@@ -51,6 +60,9 @@ namespace ProfitFood.UI.ViewModels
 
         /// <summary>Сезоны, доступные для выбора.</summary>
         public ObservableCollection<SeasonDto> SeasonOptions { get; }
+
+        /// <summary>Посещаемость по группам детей для выбранного меню.</summary>
+        public ObservableCollection<DailyMenuAttendanceDto> AttendanceRows { get; }
 
         /// <summary>Заголовок раздела.</summary>
         public string Title => "Меню";
@@ -67,6 +79,7 @@ namespace ProfitFood.UI.ViewModels
                     IsCreateMode = false;
                     IsEditMode = true;
                     StatusMessage = "Запись выбрана для редактирования.";
+                    _ = LoadAttendanceAsync(value.Id);
                 }
 
                 UpdateCommandState();
@@ -137,6 +150,7 @@ namespace ProfitFood.UI.ViewModels
         public ICommand CreateCommand { get; }
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
+        public ICommand SaveAttendanceCommand { get; }
 
         /// <summary>Загружает список при первом показе раздела.</summary>
         public Task InitializeAsync() => LoadAsync();
@@ -276,6 +290,44 @@ namespace ProfitFood.UI.ViewModels
             }
         }
 
+        /// <summary>Загружает посещаемость по группам детей для выбранного меню.</summary>
+        private async Task LoadAttendanceAsync(Guid dailyMenuId)
+        {
+            try
+            {
+                AttendanceRows.Clear();
+
+                foreach (var row in await _attendanceService.GetByMenuAsync(dailyMenuId))
+                {
+                    AttendanceRows.Add(row);
+                }
+            }
+            catch (Exception exception)
+            {
+                StatusMessage = $"Ошибка загрузки посещаемости: {exception.Message}";
+            }
+        }
+
+        /// <summary>Сохраняет посещаемость по группам детей.</summary>
+        private async Task SaveAttendanceAsync()
+        {
+            try
+            {
+                IsBusy = true;
+
+                await _attendanceService.SaveAsync(EditModel.Id, AttendanceRows.ToList());
+                StatusMessage = "Посещаемость сохранена.";
+            }
+            catch (Exception exception)
+            {
+                StatusMessage = $"Ошибка сохранения посещаемости: {exception.Message}";
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
         private static DailyMenuListItemDto BuildEditModel(DailyMenuListItemDto item) => new()
         {
             Id = item.Id,
@@ -295,6 +347,7 @@ namespace ProfitFood.UI.ViewModels
             (CreateCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (CancelCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (SaveAttendanceCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
     }
 }

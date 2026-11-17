@@ -40,6 +40,9 @@ namespace ProfitFood.Infrastructure.Repository.Interfaces
         /// <summary>Версии технологических карт.</summary>
         IRecipeCardVersionRepository recipeCardVersionRepository { get; }
 
+        /// <summary>Меню-требования на выдачу продуктов.</summary>
+        IMenuRequirementRepository menuRequirementRepository { get; }
+
         /// <summary>Остатки продуктов на складах.</summary>
         IStockBalanceRepository stockBalanceRepository { get; }
 

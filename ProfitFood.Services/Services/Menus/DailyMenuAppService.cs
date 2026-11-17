@@ -1,29 +1,39 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ProfitFood.Applications.Dto.Menus;
 using ProfitFood.Applications.Services.Interfaces;
 using ProfitFood.Domain.Entities.Enums;
 using ProfitFood.Domain.Entities.Menus;
 using ProfitFood.Infrastructure.Repository.Interfaces;
+using ProfitFoot.Infrastructure;
 
 namespace ProfitFood.Infrastructure.Services.Menus
 {
     /// <summary>
-    /// Сервис раздела «Меню»: список ежедневных меню и их сохранение.
+    /// Сервис раздела «Меню»: список ежедневных меню, их сохранение и позиции.
     /// </summary>
     public class DailyMenuAppService : IDailyMenuAppService
     {
         private readonly IDbRepository _dbRepository;
+        private readonly IDbContextFactory<ProfitFoodDbContext> _contextFactory;
         private readonly ILogger<DailyMenuAppService> _logger;
 
         /// <summary>
         /// Инициализирует сервис ежедневных меню.
         /// </summary>
         /// <param name="dbRepository">Доступ к репозиториям.</param>
+        /// <param name="contextFactory">
+        /// Фабрика контекста: позиции меню читаются вместе со справочниками в одном контексте.
+        /// </param>
         /// <param name="logger">Журнал приложения.</param>
         /// <exception cref="ArgumentNullException">Возникает, если аргументы пусты.</exception>
-        public DailyMenuAppService(IDbRepository dbRepository, ILogger<DailyMenuAppService> logger)
+        public DailyMenuAppService(
+            IDbRepository dbRepository,
+            IDbContextFactory<ProfitFoodDbContext> contextFactory,
+            ILogger<DailyMenuAppService> logger)
         {
             _dbRepository = dbRepository ?? throw new ArgumentNullException(nameof(dbRepository));
+            _contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -56,6 +66,64 @@ namespace ProfitFood.Infrastructure.Services.Menus
             return menus
                 .OrderByDescending(x => x.MenuDate)
                 .Select(menu => MapToDto(menu, seasonNames))
+                .ToList();
+        }
+
+        /// <summary>Возвращает позиции меню: приём пищи, блюдо, техкарту и выход порции.</summary>
+        public async Task<IReadOnlyCollection<DailyMenuItemDto>> GetItemsAsync(Guid dailyMenuId, CancellationToken cancellationToken = default)
+        {
+            if (dailyMenuId == Guid.Empty)
+            {
+                return Array.Empty<DailyMenuItemDto>();
+            }
+
+            await using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+
+            var items = await context.DailyMenuItems
+                .AsNoTracking()
+                .Where(x => x.DailyMenuId == dailyMenuId)
+                .ToListAsync(cancellationToken);
+
+            if (items.Count == 0)
+            {
+                return Array.Empty<DailyMenuItemDto>();
+            }
+
+            var mealTypes = await context.MealTypes.AsNoTracking().ToDictionaryAsync(x => x.Id, cancellationToken);
+            var dishes = await context.Dishes.AsNoTracking().ToDictionaryAsync(x => x.Id, cancellationToken);
+            var versions = await context.RecipeCardVersions.AsNoTracking().ToDictionaryAsync(x => x.Id, cancellationToken);
+            var cards = await context.RecipeCards.AsNoTracking().ToDictionaryAsync(x => x.Id, cancellationToken);
+            var units = await context.Units.AsNoTracking().ToDictionaryAsync(x => x.Id, cancellationToken);
+
+            return items
+                .OrderBy(item => mealTypes.TryGetValue(item.MealTypeId, out var mealType) ? mealType.SortOrder : 0)
+                .ThenBy(item => item.SortOrder)
+                .Select(item =>
+                {
+                    versions.TryGetValue(item.RecipeCardVersionId, out var version);
+
+                    var cardNumber = version is not null && cards.TryGetValue(version.RecipeCardId, out var card)
+                        ? card.CardNumber
+                        : string.Empty;
+
+                    var outputUnitName = version is not null
+                                         && units.TryGetValue(version.OutputUnitId, out var unit)
+                        ? unit.ShortName
+                        : string.Empty;
+
+                    return new DailyMenuItemDto
+                    {
+                        MealTypeName = mealTypes.TryGetValue(item.MealTypeId, out var mealTypeInfo)
+                            ? mealTypeInfo.Name
+                            : string.Empty,
+                        DishName = dishes.TryGetValue(item.DishId, out var dish)
+                            ? dish.Name
+                            : string.Empty,
+                        RecipeCardNumber = cardNumber,
+                        OutputQuantity = version?.OutputQuantity,
+                        OutputUnitName = outputUnitName
+                    };
+                })
                 .ToList();
         }
 

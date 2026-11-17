@@ -9,8 +9,8 @@
     <IsTestProject>true</IsTestProject>
     <!-- Тестовые проекты xUnit.net v3 являются исполняемыми; Microsoft.NET.Test.Sdk 17.8+ запускает их через VSTest. -->
     <OutputType>Exe</OutputType>
-    <AssemblyVersion>1.0.1.108</AssemblyVersion>
-    <FileVersion>1.0.1.108</FileVersion>
+    <AssemblyVersion>1.0.1.110</AssemblyVersion>
+    <FileVersion>1.0.1.110</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

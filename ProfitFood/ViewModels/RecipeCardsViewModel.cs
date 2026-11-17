@@ -16,10 +16,15 @@ namespace ProfitFood.UI.ViewModels
         private readonly IDishAppService _dishService;
         private readonly IUnitAppService _unitService;
         private readonly IProductAppService _productService;
+        private readonly IAgeGroupAppService _ageGroupService;
 
         private RecipeCardListItemDto? _selectedItem;
         private RecipeCardDto _editModel = new();
         private RecipeIngredientDto? _selectedIngredient;
+        private DishOutputDto? _selectedOutput;
+        private Guid? _newOutputAgeGroupId;
+        private decimal _newOutputQuantity = 0.2m;
+        private Guid? _newOutputUnitId;
         private DateTime? _versionDateFrom = DateTime.Today;
         private DateTime? _versionDateTo;
         private Guid? _newIngredientProductId;
@@ -43,18 +48,22 @@ namespace ProfitFood.UI.ViewModels
             IRecipeCardAppService service,
             IDishAppService dishService,
             IUnitAppService unitService,
-            IProductAppService productService)
+            IProductAppService productService,
+            IAgeGroupAppService ageGroupService)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _dishService = dishService ?? throw new ArgumentNullException(nameof(dishService));
             _unitService = unitService ?? throw new ArgumentNullException(nameof(unitService));
             _productService = productService ?? throw new ArgumentNullException(nameof(productService));
+            _ageGroupService = ageGroupService ?? throw new ArgumentNullException(nameof(ageGroupService));
 
             Items = new ObservableCollection<RecipeCardListItemDto>();
             Ingredients = new ObservableCollection<RecipeIngredientDto>();
             DishOptions = new ObservableCollection<DishDto>();
             UnitOptions = new ObservableCollection<UnitItemDto>();
             ProductOptions = new ObservableCollection<ProductDto>();
+            Outputs = new ObservableCollection<DishOutputDto>();
+            AgeGroupOptions = new ObservableCollection<AgeGroupDto>();
 
             RefreshCommand = new RelayCommand(async _ => await LoadAsync(), _ => !IsBusy);
             SearchCommand = new RelayCommand(async _ => await SearchAsync(), _ => !IsBusy);
@@ -63,6 +72,8 @@ namespace ProfitFood.UI.ViewModels
             DeleteCommand = new RelayCommand(async _ => await DeleteAsync(), _ => !IsBusy && EditModel.Id != Guid.Empty);
             AddIngredientCommand = new RelayCommand(_ => AddIngredient(), _ => !IsBusy);
             RemoveIngredientCommand = new RelayCommand(_ => RemoveIngredient(), _ => !IsBusy && SelectedIngredient is not null);
+            AddOutputCommand = new RelayCommand(_ => AddOutput(), _ => !IsBusy);
+            RemoveOutputCommand = new RelayCommand(_ => RemoveOutput(), _ => !IsBusy && SelectedOutput is not null);
         }
 
         /// <summary>Техкарты в порядке номера.</summary>
@@ -79,6 +90,12 @@ namespace ProfitFood.UI.ViewModels
 
         /// <summary>Продукты для выбора в строках ингредиентов.</summary>
         public ObservableCollection<ProductDto> ProductOptions { get; }
+
+        /// <summary>Выходы блюда по возрастным группам.</summary>
+        public ObservableCollection<DishOutputDto> Outputs { get; }
+
+        /// <summary>Возрастные группы для выбора в выходах.</summary>
+        public ObservableCollection<AgeGroupDto> AgeGroupOptions { get; }
 
         /// <summary>Заголовок раздела.</summary>
         public string Title => "Техкарты";
@@ -272,6 +289,40 @@ namespace ProfitFood.UI.ViewModels
             }
         }
 
+        /// <summary>Выбранный выход по возрастной группе.</summary>
+        public DishOutputDto? SelectedOutput
+        {
+            get => _selectedOutput;
+            set
+            {
+                if (SetProperty(ref _selectedOutput, value))
+                {
+                    (RemoveOutputCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        /// <summary>Возрастная группа для добавляемого выхода.</summary>
+        public Guid? NewOutputAgeGroupId
+        {
+            get => _newOutputAgeGroupId;
+            set => SetProperty(ref _newOutputAgeGroupId, value);
+        }
+
+        /// <summary>Выход для добавляемой строки.</summary>
+        public decimal NewOutputQuantity
+        {
+            get => _newOutputQuantity;
+            set => SetProperty(ref _newOutputQuantity, value);
+        }
+
+        /// <summary>Единица измерения для добавляемого выхода.</summary>
+        public Guid? NewOutputUnitId
+        {
+            get => _newOutputUnitId;
+            set => SetProperty(ref _newOutputUnitId, value);
+        }
+
         public ICommand RefreshCommand { get; }
         public ICommand SearchCommand { get; }
         public ICommand CreateCommand { get; }
@@ -279,6 +330,8 @@ namespace ProfitFood.UI.ViewModels
         public ICommand DeleteCommand { get; }
         public ICommand AddIngredientCommand { get; }
         public ICommand RemoveIngredientCommand { get; }
+        public ICommand AddOutputCommand { get; }
+        public ICommand RemoveOutputCommand { get; }
 
         /// <summary>Загружает журнал при первом показе раздела.</summary>
         public Task InitializeAsync() => LoadAsync();
@@ -460,6 +513,62 @@ namespace ProfitFood.UI.ViewModels
             StatusMessage = "Ингредиент удалён.";
         }
 
+        /// <summary>Добавляет выход для выбранной возрастной группы.</summary>
+        private void AddOutput()
+        {
+            if (NewOutputAgeGroupId is null || NewOutputAgeGroupId == Guid.Empty)
+            {
+                StatusMessage = "Выберите возрастную группу для выхода.";
+                return;
+            }
+
+            if (NewOutputQuantity <= 0m)
+            {
+                StatusMessage = "Выход для возрастной группы должен быть больше нуля.";
+                return;
+            }
+
+            if (NewOutputUnitId is null || NewOutputUnitId == Guid.Empty)
+            {
+                StatusMessage = "Выберите единицу измерения выхода.";
+                return;
+            }
+
+            if (Outputs.Any(x => x.AgeGroupId == NewOutputAgeGroupId.Value))
+            {
+                StatusMessage = "Выход для этой возрастной группы уже добавлен.";
+                return;
+            }
+
+            var ageGroup = AgeGroupOptions.FirstOrDefault(x => x.Id == NewOutputAgeGroupId.Value);
+            var unit = UnitOptions.FirstOrDefault(x => x.Id == NewOutputUnitId.Value);
+
+            Outputs.Add(new DishOutputDto
+            {
+                AgeGroupId = NewOutputAgeGroupId.Value,
+                AgeGroupName = ageGroup?.Name ?? string.Empty,
+                OutputQuantity = NewOutputQuantity,
+                UnitId = NewOutputUnitId.Value,
+                UnitName = unit?.Name ?? string.Empty
+            });
+
+            NewOutputQuantity = 0.2m;
+            StatusMessage = "Выход добавлен.";
+        }
+
+        /// <summary>Удаляет выбранный выход.</summary>
+        private void RemoveOutput()
+        {
+            if (SelectedOutput is null)
+            {
+                return;
+            }
+
+            Outputs.Remove(SelectedOutput);
+            SelectedOutput = null;
+            StatusMessage = "Выход удалён.";
+        }
+
         /// <summary>Сбрасывает карточку в режим создания новой техкарты.</summary>
         private void StartCreate()
         {
@@ -497,7 +606,14 @@ namespace ProfitFood.UI.ViewModels
                 Ingredients.Add(ingredient);
             }
 
+            Outputs.Clear();
+            foreach (var output in card.Version.Outputs)
+            {
+                Outputs.Add(output);
+            }
+
             SelectedIngredient = null;
+            SelectedOutput = null;
         }
 
         /// <summary>Собирает карточку из состояния формы перед сохранением.</summary>
@@ -512,6 +628,7 @@ namespace ProfitFood.UI.ViewModels
                 : null;
 
             EditModel.Version.Ingredients = Ingredients.ToList();
+            EditModel.Version.Outputs = Outputs.ToList();
         }
 
         /// <summary>Перезаполняет справочники блюд, единиц и продуктов.</summary>
@@ -520,6 +637,7 @@ namespace ProfitFood.UI.ViewModels
             var dishes = await _dishService.GetAllAsync();
             var units = await _unitService.GetAllAsync();
             var products = await _productService.GetAllAsync();
+            var ageGroups = await _ageGroupService.GetAllAsync();
 
             DishOptions.Clear();
             foreach (var dish in dishes)
@@ -537,6 +655,12 @@ namespace ProfitFood.UI.ViewModels
             foreach (var product in products)
             {
                 ProductOptions.Add(product);
+            }
+
+            AgeGroupOptions.Clear();
+            foreach (var ageGroup in ageGroups)
+            {
+                AgeGroupOptions.Add(ageGroup);
             }
         }
 
@@ -559,6 +683,8 @@ namespace ProfitFood.UI.ViewModels
             (DeleteCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (AddIngredientCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (RemoveIngredientCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (AddOutputCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (RemoveOutputCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
     }
 }

@@ -106,6 +106,12 @@ namespace ProfitFood.UI
 
                         // Сервисы разделов: меню, техкарты, склад и журнал документов.
                         services.AddSingleton<IDailyMenuAppService, DailyMenuAppService>();
+
+                        // Посещаемость привязана к меню на дату: она нужна для расчёта меню-требования.
+                        services.AddSingleton<IDailyMenuAttendanceAppService, DailyMenuAttendanceAppService>();
+
+                        // Меню-требование считается по меню на дату и посещаемости.
+                        services.AddSingleton<IMenuRequirementAppService, MenuRequirementAppService>();
                         services.AddSingleton<IRecipeCardAppService, RecipeCardAppService>();
                         services.AddSingleton<IStockAppService, StockAppService>();
                         services.AddSingleton<IDocumentAppService, DocumentAppService>();
@@ -123,6 +129,7 @@ namespace ProfitFood.UI
                         services.AddSingleton<RecipeCardsViewModel>();
                         services.AddSingleton<StockViewModel>();
                         services.AddSingleton<DocumentsViewModel>();
+                        services.AddSingleton<MenuRequirementsViewModel>();
                         services.AddTransient<DailyMenuEditorViewModel>();
 
                         // Справочники создаются при каждом открытии: так список всегда показывает

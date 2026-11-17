@@ -246,6 +246,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <DataGrid
@@ -336,6 +337,94 @@
                                     Content="Убрать"
                                     Style="{StaticResource HoverPrimaryButtonStyle}" />
                             </StackPanel>
+                        </Grid>
+
+                        <!--  Выход блюда по возрастным группам  -->
+                        <Grid Grid.Row="2" Margin="0,12,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock
+                                Grid.Row="0"
+                                Margin="0,0,0,6"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Foreground="#334E68"
+                                Text="Выход по возрастам" />
+
+                            <DataGrid
+                                Grid.Row="1"
+                                MaxHeight="150"
+                                AutoGenerateColumns="False"
+                                IsReadOnly="True"
+                                ItemsSource="{Binding Outputs}"
+                                SelectedItem="{Binding SelectedOutput}"
+                                Style="{StaticResource AppDataGridStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
+                                        Width="2*"
+                                        Binding="{Binding AgeGroupName}"
+                                        Header="Возрастная группа" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding OutputQuantity}"
+                                        Header="Выход" />
+                                    <DataGridTextColumn
+                                        Width="1*"
+                                        Binding="{Binding UnitName}"
+                                        Header="Ед." />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Grid Grid.Row="2" Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="6" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="6" />
+                                    <ColumnDefinition Width="1.2*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox
+                                    Grid.Column="0"
+                                    DisplayMemberPath="Name"
+                                    ItemsSource="{Binding AgeGroupOptions}"
+                                    SelectedValue="{Binding NewOutputAgeGroupId}"
+                                    SelectedValuePath="Id"
+                                    Style="{StaticResource AppComboBoxStyle}" />
+                                <TextBox
+                                    Grid.Column="2"
+                                    Style="{StaticResource AppTextBoxStyle}"
+                                    Text="{Binding NewOutputQuantity, UpdateSourceTrigger=PropertyChanged}" />
+                                <ComboBox
+                                    Grid.Column="4"
+                                    DisplayMemberPath="Name"
+                                    ItemsSource="{Binding UnitOptions}"
+                                    SelectedValue="{Binding NewOutputUnitId}"
+                                    SelectedValuePath="Id"
+                                    Style="{StaticResource AppComboBoxStyle}" />
+
+                                <StackPanel
+                                    Grid.Column="5"
+                                    Margin="8,0,0,0"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        Width="90"
+                                        Margin="0,0,8,0"
+                                        Command="{Binding AddOutputCommand}"
+                                        Content="Добавить"
+                                        Style="{StaticResource HoverPrimaryButtonStyle}" />
+                                    <Button
+                                        Width="90"
+                                        Command="{Binding RemoveOutputCommand}"
+                                        Content="Убрать"
+                                        Style="{StaticResource HoverPrimaryButtonStyle}" />
+                                </StackPanel>
+                            </Grid>
                         </Grid>
                     </Grid>
 
