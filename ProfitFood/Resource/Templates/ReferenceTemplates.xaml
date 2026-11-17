@@ -1,14 +1,208 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:views="clr-namespace:ProfitFood.UI.Views.References"
+    xmlns:views="clr-namespace:ProfitFood.UI.Views.Reference"
+    xmlns:dto="clr-namespace:ProfitFood.Applications.Dto.References;assembly=ProfitFood.Applications"
+    xmlns:vmAgeGroups="clr-namespace:ProfitFood.UI.ViewModels.Reference.AgeGroups"
+    xmlns:vmChildGroups="clr-namespace:ProfitFood.UI.ViewModels.Reference.ChildGroups"
+    xmlns:vmDishCategories="clr-namespace:ProfitFood.UI.ViewModels.Reference.DishCategories"
+    xmlns:vmMealTypes="clr-namespace:ProfitFood.UI.ViewModels.Reference.MealTypes"
     xmlns:vmProductCategory="clr-namespace:ProfitFood.UI.ViewModels.Reference.ProductCategories"
+    xmlns:vmProducts="clr-namespace:ProfitFood.UI.ViewModels.Reference.Products"
+    xmlns:vmSeasons="clr-namespace:ProfitFood.UI.ViewModels.Reference.Seasons"
+    xmlns:vmStorageLocations="clr-namespace:ProfitFood.UI.ViewModels.Reference.StorageLocations"
+    xmlns:vmDishes="clr-namespace:ProfitFood.UI.ViewModels.Reference.Dishes"
     xmlns:vmUnits="clr-namespace:ProfitFood.UI.ViewModels.Reference.Units">
 
+    <!--  Словарь должен быть самодостаточным: StaticResource ищет ресурсы только в этом словаре
+          и его MergedDictionaries, но не в словаре, который его подключает.  -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Resource/Styles/Forms.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!--  Экраны справочников: единицы и категории продуктов имеют собственные представления  -->
     <DataTemplate DataType="{x:Type vmUnits:UnitsReferenceViewModel}">
         <views:UnitsReferenceView />
     </DataTemplate>
     <DataTemplate DataType="{x:Type vmProductCategory:ProductCategoriesViewModel}">
         <views:ProductCategoriesView />
+    </DataTemplate>
+
+    <!--  Остальные справочники используют одно общее представление  -->
+    <DataTemplate DataType="{x:Type vmDishes:DishesReferenceViewModel}">
+        <views:ReferenceCrudView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmAgeGroups:AgeGroupsReferenceViewModel}">
+        <views:ReferenceCrudView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmChildGroups:ChildGroupsReferenceViewModel}">
+        <views:ReferenceCrudView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmDishCategories:DishCategoriesReferenceViewModel}">
+        <views:ReferenceCrudView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmMealTypes:MealTypesReferenceViewModel}">
+        <views:ReferenceCrudView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmProducts:ProductsReferenceViewModel}">
+        <views:ReferenceCrudView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmSeasons:SeasonsReferenceViewModel}">
+        <views:ReferenceCrudView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmStorageLocations:StorageLocationsReferenceViewModel}">
+        <views:ReferenceCrudView />
+    </DataTemplate>
+
+    <!--  Карточки редактирования: шаблон подбирается по типу модели редактирования  -->
+    <DataTemplate DataType="{x:Type dto:AgeGroupDto}">
+        <StackPanel>
+            <TextBlock Margin="0,0,0,6" Foreground="#486581" Text="Наименование" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Возраст от, месяцев" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding AgeFromMonths, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Возраст до, месяцев" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding AgeToMonths, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type dto:ChildGroupDto}">
+        <StackPanel>
+            <TextBlock Margin="0,0,0,6" Foreground="#486581" Text="Наименование" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Возрастная группа" />
+            <ComboBox
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding DataContext.AgeGroupOptions, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                SelectedValue="{Binding AgeGroupId}"
+                SelectedValuePath="Id"
+                Style="{StaticResource AppComboBoxStyle}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Плановое количество детей" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding PlannedChildrenCount, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type dto:DishCategoryDto}">
+        <StackPanel>
+            <TextBlock Margin="0,0,0,6" Foreground="#486581" Text="Наименование" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Порядок сортировки" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding SortOrder, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type dto:MealTypeDto}">
+        <StackPanel>
+            <TextBlock Margin="0,0,0,6" Foreground="#486581" Text="Наименование" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Код" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Порядок сортировки" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding SortOrder, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type dto:SeasonDto}">
+        <StackPanel>
+            <TextBlock Margin="0,0,0,6" Foreground="#486581" Text="Наименование" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Месяц начала (1-12)" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding MonthFrom, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Месяц окончания (1-12)" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding MonthTo, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type dto:StorageLocationDto}">
+        <StackPanel>
+            <TextBlock Margin="0,0,0,6" Foreground="#486581" Text="Наименование" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Код" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type dto:ProductDto}">
+        <StackPanel>
+            <TextBlock Margin="0,0,0,6" Foreground="#486581" Text="Краткое наименование" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Полное наименование" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Категория" />
+            <ComboBox
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding DataContext.ProductCategoryOptions, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                SelectedValue="{Binding ProductCategoryId}"
+                SelectedValuePath="Id"
+                Style="{StaticResource AppComboBoxStyle}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Базовая единица" />
+            <ComboBox
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding DataContext.UnitOptions, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                SelectedValue="{Binding BaseUnitId}"
+                SelectedValuePath="Id"
+                Style="{StaticResource AppComboBoxStyle}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Складская единица" />
+            <ComboBox
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding DataContext.UnitOptions, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                SelectedValue="{Binding StorageUnitId}"
+                SelectedValuePath="Id"
+                Style="{StaticResource AppComboBoxStyle}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Артикул" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Article, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Минимальный остаток" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding MinStock, UpdateSourceTrigger=PropertyChanged}" />
+
+            <CheckBox
+                Margin="0,12,0,0"
+                Content="Скоропортящийся продукт"
+                IsChecked="{Binding IsPerishable}" />
+        </StackPanel>
+    </DataTemplate>
+    <!--  Форма блюда: категория и приём пищи выбираются из справочников  -->
+    <DataTemplate DataType="{x:Type dto:DishDto}">
+        <StackPanel>
+            <TextBlock Margin="0,0,0,6" Foreground="#486581" Text="Наименование" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Код" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Категория блюда" />
+            <ComboBox
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding DataContext.DishCategoryOptions, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                SelectedValue="{Binding DishCategoryId}"
+                SelectedValuePath="Id"
+                Style="{StaticResource AppComboBoxStyle}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Приём пищи" />
+            <ComboBox
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding DataContext.MealTypeOptions, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                SelectedValue="{Binding MealTypeId}"
+                SelectedValuePath="Id"
+                Style="{StaticResource AppComboBoxStyle}" />
+
+            <TextBlock Margin="0,12,0,6" Foreground="#486581" Text="Примечание" />
+            <TextBox Style="{StaticResource AppTextBoxStyle}" Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
     </DataTemplate>
 </ResourceDictionary>

@@ -2,7 +2,7 @@
 using ProfitFood.Applications.Dto.References;
 using ProfitFood.Applications.Services.Interfaces;
 using ProfitFood.Domain.ModelsViewModels;
-using ProfitFood.UI.Views.Reference.Base;
+using ProfitFood.UI.ViewModels.Reference.Base;
 
 namespace ProfitFood.UI.ViewModels.Reference.Units
 {

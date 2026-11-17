@@ -1,12 +1,343 @@
-﻿<UserControl x:Class="ProfitFood.UI.Views.DocumentsView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ProfitFood.UI.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="ProfitFood.UI.Views.DocumentsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:ProfitFood.UI.ViewModels"
+    d:DataContext="{d:DesignInstance Type=vm:DocumentsViewModel,
+                                     IsDesignTimeCreatable=False}"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Styles/Colors.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/Buttons.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/Cards.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/Forms.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/DataGrid.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Margin="0,0,0,12"
+            FontSize="24"
+            FontWeight="SemiBold"
+            Foreground="#102A43"
+            Text="{Binding Title}" />
+
+        <Grid Grid.Row="1" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox
+                Grid.Column="0"
+                Height="34"
+                Padding="10,6"
+                Style="{StaticResource AppTextBoxStyle}"
+                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    Width="100"
+                    Margin="8,0,8,0"
+                    Command="{Binding SearchCommand}"
+                    Content="Найти"
+                    Style="{StaticResource HoverPrimaryButtonStyle}" />
+                <Button
+                    Width="150"
+                    Margin="0,0,8,0"
+                    Command="{Binding CreateDocumentCommand}"
+                    Content="Новый документ"
+                    Style="{StaticResource HoverPrimaryButtonStyle}" />
+                <Button
+                    Width="110"
+                    Command="{Binding RefreshCommand}"
+                    Content="Обновить"
+                    Style="{StaticResource HoverPrimaryButtonStyle}" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.1*" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="1.9*" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Журнал документов  -->
+            <DataGrid
+                Grid.Column="0"
+                AutoGenerateColumns="False"
+                IsReadOnly="True"
+                ItemsSource="{Binding Items}"
+                SelectedItem="{Binding SelectedItem}"
+                Style="{StaticResource AppDataGridStyle}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="1.2*"
+                        Binding="{Binding DocumentNumber}"
+                        Header="Номер" />
+                    <DataGridTextColumn
+                        Width="1*"
+                        Binding="{Binding DocumentDate, StringFormat=dd.MM.yyyy}"
+                        Header="Дата" />
+                    <DataGridTextColumn
+                        Width="1.2*"
+                        Binding="{Binding DocumentTypeName}"
+                        Header="Тип" />
+                    <DataGridTextColumn
+                        Width="1.2*"
+                        Binding="{Binding StatusName}"
+                        Header="Статус" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!--  Карточка документа: шапка, строки и команды  -->
+            <Border
+                Grid.Column="2"
+                Padding="16"
+                Background="#F8FBFF"
+                BorderBrush="#D9E2EC"
+                BorderThickness="1"
+                CornerRadius="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0">
+                        <TextBlock
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Foreground="#102A43"
+                            Text="Карточка документа" />
+
+                        <TextBlock
+                            Margin="0,12,0,6"
+                            Foreground="#486581"
+                            Text="Номер" />
+                        <TextBlock Foreground="#102A43" Text="{Binding EditModel.DocumentNumber}" />
+
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock
+                                    Margin="0,0,0,6"
+                                    Foreground="#486581"
+                                    Text="Тип документа" />
+                                <ComboBox
+                                    DisplayMemberPath="Title"
+                                    IsEnabled="{Binding IsDraft}"
+                                    ItemsSource="{Binding DocumentTypes}"
+                                    SelectedValue="{Binding EditModel.DocumentType}"
+                                    SelectedValuePath="Value"
+                                    Style="{StaticResource AppComboBoxStyle}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock
+                                    Margin="0,0,0,6"
+                                    Foreground="#486581"
+                                    Text="Склад" />
+                                <ComboBox
+                                    DisplayMemberPath="Name"
+                                    IsEnabled="{Binding IsDraft}"
+                                    ItemsSource="{Binding StorageLocationOptions}"
+                                    SelectedValue="{Binding EditModel.StorageLocationId}"
+                                    SelectedValuePath="Id"
+                                    Style="{StaticResource AppComboBoxStyle}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock
+                                    Margin="0,0,0,6"
+                                    Foreground="#486581"
+                                    Text="Дата документа" />
+                                <DatePicker IsEnabled="{Binding IsDraft}" SelectedDate="{Binding EditDate}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock
+                                    Margin="0,0,0,6"
+                                    Foreground="#486581"
+                                    Text="Статус" />
+                                <TextBlock Foreground="#102A43" Text="{Binding EditModel.StatusName}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock
+                            Margin="0,8,0,6"
+                            Foreground="#486581"
+                            Text="Примечание" />
+                        <TextBox
+                            Height="52"
+                            AcceptsReturn="True"
+                            IsEnabled="{Binding IsDraft}"
+                            Style="{StaticResource AppTextBoxStyle}"
+                            Text="{Binding EditModel.Notes, UpdateSourceTrigger=PropertyChanged}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <Grid Grid.Row="1" Margin="0,12,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <DataGrid
+                            Grid.Row="0"
+                            AutoGenerateColumns="False"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding DocumentItems}"
+                            SelectedItem="{Binding SelectedDocumentItem}"
+                            Style="{StaticResource AppDataGridStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn
+                                    Width="2.2*"
+                                    Binding="{Binding ProductName}"
+                                    Header="Продукт" />
+                                <DataGridTextColumn
+                                    Width="1*"
+                                    Binding="{Binding UnitName}"
+                                    Header="Ед." />
+                                <DataGridTextColumn
+                                    Width="1*"
+                                    Binding="{Binding Quantity}"
+                                    Header="Количество" />
+                                <DataGridTextColumn
+                                    Width="1*"
+                                    Binding="{Binding Price}"
+                                    Header="Цена" />
+                                <DataGridTextColumn
+                                    Width="1*"
+                                    Binding="{Binding Amount}"
+                                    Header="Сумма" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!--  Панель добавления строки  -->
+                        <Grid Grid.Row="1" Margin="0,8,0,0" IsEnabled="{Binding IsDraft}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="6" />
+                                <ColumnDefinition Width="1.2*" />
+                                <ColumnDefinition Width="6" />
+                                <ColumnDefinition Width="0.9*" />
+                                <ColumnDefinition Width="6" />
+                                <ColumnDefinition Width="0.9*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <ComboBox
+                                Grid.Column="0"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding ProductOptions}"
+                                SelectedValue="{Binding NewItemProductId}"
+                                SelectedValuePath="Id"
+                                Style="{StaticResource AppComboBoxStyle}" />
+                            <ComboBox
+                                Grid.Column="2"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding UnitOptions}"
+                                SelectedValue="{Binding NewItemUnitId}"
+                                SelectedValuePath="Id"
+                                Style="{StaticResource AppComboBoxStyle}" />
+                            <TextBox
+                                Grid.Column="4"
+                                Style="{StaticResource AppTextBoxStyle}"
+                                Text="{Binding NewItemQuantity, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBox
+                                Grid.Column="6"
+                                Style="{StaticResource AppTextBoxStyle}"
+                                Text="{Binding NewItemPrice, UpdateSourceTrigger=PropertyChanged}" />
+
+                            <StackPanel
+                                Grid.Column="7"
+                                Margin="8,0,0,0"
+                                Orientation="Horizontal">
+                                <Button
+                                    Width="90"
+                                    Margin="0,0,8,0"
+                                    Command="{Binding AddItemCommand}"
+                                    Content="В строку"
+                                    Style="{StaticResource HoverPrimaryButtonStyle}" />
+                                <Button
+                                    Width="90"
+                                    Command="{Binding RemoveItemCommand}"
+                                    Content="Убрать"
+                                    Style="{StaticResource HoverPrimaryButtonStyle}" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+
+                    <StackPanel
+                        Grid.Row="2"
+                        Margin="0,16,0,0"
+                        Orientation="Horizontal">
+                        <Button
+                            Width="120"
+                            Margin="0,0,8,0"
+                            Command="{Binding SaveDocumentCommand}"
+                            Content="Сохранить"
+                            Style="{StaticResource HoverPrimaryButtonStyle}" />
+                        <Button
+                            Width="120"
+                            Margin="0,0,8,0"
+                            Command="{Binding PostCommand}"
+                            Content="Провести"
+                            Style="{StaticResource HoverPrimaryButtonStyle}" />
+                        <Button
+                            Width="170"
+                            Margin="0,0,8,0"
+                            Command="{Binding UnpostCommand}"
+                            Content="Отменить проведение"
+                            Style="{StaticResource HoverPrimaryButtonStyle}" />
+                        <Button
+                            Width="110"
+                            Command="{Binding DeleteDocumentCommand}"
+                            Content="Удалить"
+                            Style="{StaticResource HoverPrimaryButtonStyle}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <TextBlock
+            Grid.Row="3"
+            Margin="0,12,0,0"
+            Foreground="#627D98"
+            Text="{Binding StatusMessage}" />
     </Grid>
 </UserControl>

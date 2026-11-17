@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProfitFood.Applications.Services.Interfaces
+﻿namespace ProfitFood.Applications.Services.Interfaces
 {
     public interface IDishCategoryAppService
     {
+        Task<IReadOnlyCollection<Dto.References.DishCategoryDto>> GetAllAsync(CancellationToken cancellationToken = default);
+
+        Task<IReadOnlyCollection<Dto.References.DishCategoryDto>> SearchAsync(string searchText, CancellationToken cancellationToken = default);
+
+        Task SaveAsync(Dto.References.DishCategoryDto model, CancellationToken cancellationToken = default);
+
+        Task DeleteAsync(Dto.References.DishCategoryDto model, CancellationToken cancellationToken = default);
     }
 }

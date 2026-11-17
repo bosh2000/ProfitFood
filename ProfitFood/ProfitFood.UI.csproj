@@ -6,9 +6,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <AssemblyVersion>1.0.2.375</AssemblyVersion>
-    <FileVersion>1.0.2.375</FileVersion>
+    <AssemblyVersion>1.0.2.388</AssemblyVersion>
+    <FileVersion>1.0.2.388</FileVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\References\ProductCategoriesView.xaml.cs" />
+    <Compile Remove="Views\References\UnitsReferenceView.xaml.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="profitfood.db" />
@@ -16,9 +21,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Remove="Views\References\ProductCategoriesView.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Resource\Images\main.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -35,12 +50,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Resource\Styles\" />
     <Folder Include="Resource\Templates\" />
     <Folder Include="Views\DailyMenu\" />
+    <Folder Include="Views\References\" />
   </ItemGroup>
 
   <ItemGroup>

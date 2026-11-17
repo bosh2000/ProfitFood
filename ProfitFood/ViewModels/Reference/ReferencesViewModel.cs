@@ -1,77 +1,135 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ProfitFood.UI.ViewModels.Reference.AgeGroups;
+using ProfitFood.UI.ViewModels.Reference.ChildGroups;
+using ProfitFood.UI.ViewModels.Reference.DishCategories;
+using ProfitFood.UI.ViewModels.Reference.Dishes;
+using ProfitFood.UI.ViewModels.Reference.MealTypes;
 using ProfitFood.UI.ViewModels.Reference.ProductCategories;
+using ProfitFood.UI.ViewModels.Reference.Products;
+using ProfitFood.UI.ViewModels.Reference.Seasons;
+using ProfitFood.UI.ViewModels.Reference.StorageLocations;
 using ProfitFood.UI.ViewModels.Reference.Units;
-using ProfitFood.UI.Views.Reference;
 using System.Collections.ObjectModel;
 
 namespace ProfitFood.UI.ViewModels.Reference
 {
-    public sealed class ReferencesViewModel : ViewModelBase
+    /// <summary>
+    /// Раздел справочников: список нормативных данных слева и выбранный справочник справа.
+    /// </summary>
+    public sealed class ReferencesViewModel : ViewModelBase, IInitializableViewModel
     {
-        private ViewModelBase? _currentReferenceViewModel;
+        private readonly IServiceProvider _serviceProvider;
+
         private ReferenceSectionItem? _selectedSection;
+        private ViewModelBase? _currentReferenceViewModel;
+        private string _statusMessage = "Выберите справочник.";
+        private bool _isInitialized;
 
-        private IServiceProvider _serviceProvider;
-
-        public IServiceProvider ServiceProvider
+        /// <summary>
+        /// Инициализирует раздел справочников.
+        /// </summary>
+        /// <param name="serviceProvider">Контейнер, из которого разрешаются ViewModel справочников.</param>
+        /// <exception cref="ArgumentNullException">Возникает, если <paramref name="serviceProvider"/> равно null.</exception>
+        public ReferencesViewModel(IServiceProvider serviceProvider)
         {
-            set { this._serviceProvider = value; }
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+
+            // Список типизирован: ключом служит сам тип ViewModel, поэтому switch по строкам не нужен.
+            Sections = new ObservableCollection<ReferenceSectionItem>
+            {
+                new("Единицы измерения", typeof(UnitsReferenceViewModel)),
+                new("Категории продуктов", typeof(ProductCategoriesViewModel)),
+                new("Продукты", typeof(ProductsReferenceViewModel)),
+                new("Возрастные группы", typeof(AgeGroupsReferenceViewModel)),
+                new("Группы детей", typeof(ChildGroupsReferenceViewModel)),
+                new("Типы приемов пищи", typeof(MealTypesReferenceViewModel)),
+                new("Категории блюд", typeof(DishCategoriesReferenceViewModel)),
+                new("Блюда", typeof(DishesReferenceViewModel)),
+                new("Сезоны", typeof(SeasonsReferenceViewModel)),
+                new("Склады", typeof(StorageLocationsReferenceViewModel))
+            };
         }
 
-        public ObservableCollection<ReferenceSectionItem> Sections { get; } = new();
+        /// <summary>
+        /// Список справочников.
+        /// </summary>
+        public ObservableCollection<ReferenceSectionItem> Sections { get; }
 
+        /// <summary>
+        /// Выбранный справочник. Выбор сразу открывает его справа.
+        /// </summary>
         public ReferenceSectionItem? SelectedSection
         {
             get => _selectedSection;
             set
             {
-                if (SetProperty(ref _selectedSection, value) && value != null)
+                if (SetProperty(ref _selectedSection, value) && value is not null)
                 {
                     OpenSection(value);
                 }
             }
         }
 
+        /// <summary>
+        /// ViewModel открытого справочника.
+        /// </summary>
         public ViewModelBase? CurrentReferenceViewModel
         {
             get => _currentReferenceViewModel;
-            set => SetProperty(ref _currentReferenceViewModel, value);
+            private set => SetProperty(ref _currentReferenceViewModel, value);
         }
 
-        public ReferencesViewModel(IServiceProvider serviceProvider)
+        /// <summary>
+        /// Сообщение о состоянии загрузки справочника.
+        /// </summary>
+        public string StatusMessage
         {
-            _serviceProvider = serviceProvider;
-            Sections.Add(new ReferenceSectionItem("Единицы измерения", "Units"));
-            Sections.Add(new ReferenceSectionItem("Категории продуктов", "ProductCategories"));
-            Sections.Add(new ReferenceSectionItem("Продукты", "Products"));
-            Sections.Add(new ReferenceSectionItem("Возрастные группы", "AgeGroups"));
-            Sections.Add(new ReferenceSectionItem("Группы детей", "ChildGroups"));
-            Sections.Add(new ReferenceSectionItem("Типы приемов пищи", "MealTypes"));
-            Sections.Add(new ReferenceSectionItem("Категории блюд", "DishCategories"));
-            Sections.Add(new ReferenceSectionItem("Сезоны", "Seasons"));
-            Sections.Add(new ReferenceSectionItem("Склады", "StorageLocations"));
-
-            SelectedSection = Sections.FirstOrDefault();
+            get => _statusMessage;
+            private set => SetProperty(ref _statusMessage, value);
         }
 
+        /// <summary>
+        /// Открывает первый справочник при первом показе раздела.
+        /// </summary>
+        /// <returns>Задача завершается после запуска загрузки выбранного справочника.</returns>
+        public Task InitializeAsync()
+        {
+            if (_isInitialized)
+            {
+                return Task.CompletedTask;
+            }
+
+            _isInitialized = true;
+
+            // Навигация запускается не из конструктора: к этому моменту раздел уже привязан к интерфейсу.
+            SelectedSection = Sections.FirstOrDefault();
+
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Открывает справочник по выбранному пункту.
+        /// </summary>
+        /// <param name="section">Выбранный пункт списка справочников.</param>
         private async void OpenSection(ReferenceSectionItem section)
         {
-            CurrentReferenceViewModel = section.Key switch
+            try
             {
-                "Units" => _serviceProvider.GetRequiredService<UnitsReferenceViewModel>(),
-                "ProductCategories" => _serviceProvider.GetRequiredService<ProductCategoriesViewModel>(),
-                "Products" => new ProductsReferenceViewModel(),
-                "AgeGroups" => new AgeGroupsReferenceViewModel(),
-                "ChildGroups" => new ChildGroupsReferenceViewModel(),
-                "MealTypes" => new MealTypesReferenceViewModel(),
-                "DishCategories" => new DishCategoriesReferenceViewModel(),
-                "Seasons" => new SeasonsReferenceViewModel(),
-                "StorageLocations" => new StorageLocationsReferenceViewModel(),
-                _ => null
-            };
-            if (CurrentReferenceViewModel is IInitializableViewModel initializableViewModel)
+                var viewModel = (ViewModelBase)_serviceProvider.GetRequiredService(section.ViewModelType);
+                CurrentReferenceViewModel = viewModel;
+
+                if (viewModel is IInitializableViewModel initializable)
+                {
+                    await initializable.InitializeAsync();
+                }
+
+                StatusMessage = $"Открыт справочник «{section.Title}».";
+            }
+            catch (Exception exception)
             {
-                await initializableViewModel.InitializeAsync();
+                // Пункт меню остаётся выбранным, но пользователь видит причину вместо пустой панели.
+                CurrentReferenceViewModel = null;
+                StatusMessage = $"Не удалось открыть справочник: {exception.Message}";
             }
         }
     }

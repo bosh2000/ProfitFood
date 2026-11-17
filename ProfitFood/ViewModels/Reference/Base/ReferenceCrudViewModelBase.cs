@@ -3,7 +3,7 @@ using ProfitFood.UI.ViewModels.Reference;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace ProfitFood.UI.Views.Reference.Base
+namespace ProfitFood.UI.ViewModels.Reference.Base
 {
     public abstract class ReferenceCrudViewModelBase<TListItem, TEditModel> : ViewModelBase, IInitializableViewModel
         where TListItem : class
@@ -28,11 +28,6 @@ namespace ProfitFood.UI.Views.Reference.Base
             CancelCommand = new RelayCommand(_ => Cancel());
             RefreshCommand = new RelayCommand(async _ => await LoadAsync(), _ => !IsBusy);
             SearchCommand = new RelayCommand(async _ => await SearchAsync(), _ => !IsBusy);
-        }
-
-        public virtual async Task IInitializeAsync()
-        {
-            await LoadAsync();
         }
 
         public ObservableCollection<TListItem> Items { get; }

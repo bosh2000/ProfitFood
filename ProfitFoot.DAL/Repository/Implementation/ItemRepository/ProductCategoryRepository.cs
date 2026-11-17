@@ -1,18 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ProfitFood.DAL.Repository.Interfaces;
 using ProfitFood.Domain.Entities.References;
 using ProfitFoot.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProfitFood.Infrastructure.Repository.Implementation.ItemRepository
 {
+    /// <summary>Репозиторий справочника категорий продуктов.</summary>
     public class ProductCategoryRepository : RepositoryBase<ProductCategory>, IProductCategoryRepository
     {
-        public ProductCategoryRepository(ProfitFoodDbContext context, IMapper mapper) : base(context)
+        /// <summary>Инициализирует репозиторий.</summary>
+        /// <param name="contextFactory">Фабрика, выдающая контекст на каждую операцию.</param>
+        /// <param name="mapper">Маппер, сохранённый для будущих проекций.</param>
+        public ProductCategoryRepository(IDbContextFactory<ProfitFoodDbContext> contextFactory, IMapper mapper) : base(contextFactory)
         {
         }
     }

@@ -9,7 +9,7 @@ namespace ProfitFoot.Infrastructure
 {
     public class ProfitFoodDbContext : DbContext
     {
-        public ProfitFoodDbContext(DbContextOptions options) : base(options)
+        public ProfitFoodDbContext(DbContextOptions<ProfitFoodDbContext> options) : base(options)
         {
         }
 

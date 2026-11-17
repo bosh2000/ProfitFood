@@ -16,71 +16,108 @@
     mc:Ignorable="d">
 
     <Window.Resources>
-        <!--  Какой View показывать для какой ViewModel  -->
-        <DataTemplate DataType="{x:Type vmDashboardViewModel:DashboardViewModel}">
-            <views:DashboardView />
-        </DataTemplate>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Styles/Colors.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/ListBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <DataTemplate DataType="{x:Type vmDialyMenuEditor:DailyMenuEditorViewModel}">
-            <views:DailyMenuEditorView />
-        </DataTemplate>
+            <!--  Какой View показывать для какой ViewModel  -->
+            <DataTemplate DataType="{x:Type vmDashboardViewModel:DashboardViewModel}">
+                <views:DashboardView />
+            </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:RecipeCardsViewModel}">
-            <views:RecipeCardsView />
-        </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:DailyMenuListViewModel}">
+                <views:DailyMenuListView />
+            </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:StockViewModel}">
-            <views:StockView />
-        </DataTemplate>
+            <DataTemplate DataType="{x:Type vmDialyMenuEditor:DailyMenuEditorViewModel}">
+                <views:DailyMenuEditorView />
+            </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:DocumentsViewModel}">
-            <views:DocumentsView />
-        </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:RecipeCardsViewModel}">
+                <views:RecipeCardsView />
+            </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vmReferenceViewModel:ReferencesViewModel}">
-            <views:ReferencesView />
-        </DataTemplate>
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="34" />
-            <Setter Property="Padding" Value="14,6" />
-            <Setter Property="Background" Value="#2F6FED" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderBrush" Value="#2F6FED" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="Border"
-                         Background="{TemplateBinding Background}"
-                         BorderBrush="{TemplateBinding BorderBrush}"
-                         BorderThickness="{TemplateBinding BorderThickness}"
-                         CornerRadius="8">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Margin="{TemplateBinding Padding}" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Border" Property="Opacity" Value="0.92" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Border" Property="Opacity" Value="0.82" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="Border" Property="Opacity" Value="0.45" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
-            <Setter Property="Background" Value="White" />
-            <Setter Property="Foreground" Value="#334E68" />
-            <Setter Property="BorderBrush" Value="#BCCCDC" />
-        </Style>
+            <DataTemplate DataType="{x:Type vm:StockViewModel}">
+                <views:StockView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:DocumentsViewModel}">
+                <views:DocumentsView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vmReferenceViewModel:ReferencesViewModel}">
+                <views:ReferencesView />
+            </DataTemplate>
+
+            <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+                <Setter Property="Height" Value="34" />
+                <Setter Property="Padding" Value="14,6" />
+                <Setter Property="Background" Value="#2F6FED" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="BorderBrush" Value="#2F6FED" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                                <ContentPresenter
+                                    Margin="{TemplateBinding Padding}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Opacity" Value="0.92" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Border" Property="Opacity" Value="0.82" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="Border" Property="Opacity" Value="0.45" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+                <Setter Property="Background" Value="White" />
+                <Setter Property="Foreground" Value="#334E68" />
+                <Setter Property="BorderBrush" Value="#BCCCDC" />
+            </Style>
+
+            <!--  Ярлык вкладки: заголовок и кнопка закрытия  -->
+            <DataTemplate x:Key="TabHeaderTemplate" DataType="{x:Type vm:TabItemViewModel}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Header}" />
+                    <Button
+                        Margin="8,0,0,0"
+                        Padding="4,0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding CloseCommand}"
+                        Content="✕"
+                        Cursor="Hand"
+                        FontSize="11"
+                        ToolTip="Закрыть вкладку" />
+                </StackPanel>
+            </DataTemplate>
+
+            <!--  Контейнер вкладки: в содержимое попадает страница раздела, а не сама обёртка TabItemViewModel  -->
+            <Style x:Key="TabItemContainerStyle" TargetType="TabItem">
+                <Setter Property="Content" Value="{Binding Content}" />
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid Background="#FFF5F7FA">
@@ -99,6 +136,7 @@
             <DockPanel Margin="16,12">
                 <TextBlock
                     DockPanel.Dock="Left"
+                    VerticalAlignment="Center"
                     FontSize="22"
                     FontWeight="SemiBold"
                     Foreground="#102A43"
@@ -107,36 +145,35 @@
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                     <Button
                         Margin="0,0,8,0"
-                        Command="{Binding OpenDailyMenuEditorCommand}"
-                        Style="{StaticResource SecondaryButtonStyle}"
-                        Content="Создать меню" />
+                        Command="{Binding CreateMenuCommand}"
+                        Content="Создать меню"
+                        Style="{StaticResource PrimaryButtonStyle}" />
                     <Button
-                        Margin="0,0,8,0"
-                        Command="{Binding OpenDailyMenusCommand}"
-                        Style="{StaticResource SecondaryButtonStyle}"
-                        Content="Открыть список меню" />
-                    <Button
-                        Command="{Binding OpenDocumentsCommand}"
-                        Content="Документы"
+                        Command="{Binding SelectedTab.CloseCommand}"
+                        Content="Закрыть вкладку"
                         Style="{StaticResource SecondaryButtonStyle}" />
                 </StackPanel>
             </DockPanel>
         </Border>
 
-        <!--  Основная область  -->
+        <!--  Основная область: меню разделов и вкладки  -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="240" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!--  Боковое меню  -->
             <Border
                 Grid.Column="0"
                 Background="White"
                 BorderBrush="#D9E2EC"
                 BorderThickness="0,0,1,0">
-                <StackPanel Margin="12">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
                     <TextBlock
                         Margin="8,8,8,12"
                         FontSize="16"
@@ -144,49 +181,25 @@
                         Foreground="#334E68"
                         Text="Разделы" />
 
-                    <Button
-                        Margin="0,0,0,8"
-                        Command="{Binding OpenDashboardCommand}"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Content="Главная" />
-
-                    <Button
-                        Margin="0,0,0,8"
-                        Command="{Binding OpenDailyMenusCommand}"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Content="Меню" />
-
-                    <Button
-                        Margin="0,0,0,8"
-                        Command="{Binding OpenRecipeCardsCommand}"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Content="Техкарты" />
-
-                    <Button
-                        Margin="0,0,0,8"
-                        Command="{Binding OpenStockCommand}"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Content="Склад" />
-
-                    <Button
-                        Margin="0,0,0,8"
-                        Command="{Binding OpenDocumentsCommand}"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Content="Документы" />
-
-                    <Button
-                        Margin="0,0,0,8"
-                        Command="{Binding OpenReferencesCommand}"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Content="Справочники" />
-                </StackPanel>
+                    <ListBox
+                        Grid.Row="1"
+                        DisplayMemberPath="Title"
+                        ItemContainerStyle="{StaticResource ReferenceSectionListBoxItemStyle}"
+                        ItemsSource="{Binding Sections}"
+                        SelectedItem="{Binding SelectedSection}"
+                        Style="{StaticResource ReferenceSectionListBoxStyle}" />
+                </Grid>
             </Border>
 
-            <!--  Здесь будет меняться представление  -->
-            <ContentControl
+            <TabControl
                 Grid.Column="1"
                 Margin="12"
-                Content="{Binding CurrentViewModel}" />
+                Background="Transparent"
+                BorderThickness="0"
+                ItemContainerStyle="{StaticResource TabItemContainerStyle}"
+                ItemTemplate="{StaticResource TabHeaderTemplate}"
+                ItemsSource="{Binding Tabs}"
+                SelectedItem="{Binding SelectedTab}" />
         </Grid>
 
         <!--  Строка состояния  -->

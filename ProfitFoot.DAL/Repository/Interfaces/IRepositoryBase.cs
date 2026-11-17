@@ -20,7 +20,5 @@ namespace ProfitFood.DAL.Repository.Interfaces
         Task UpdateAsync(T entity);
 
         Task DeleteAsync(T entity);
-
-        Task SaveAsync();
     }
 }
