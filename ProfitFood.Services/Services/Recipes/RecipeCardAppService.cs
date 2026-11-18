@@ -500,6 +500,7 @@ namespace ProfitFood.Infrastructure.Services.Recipes
             return new RecipeCardListItemDto
             {
                 Id = card.Id,
+                DishId = card.DishId,
                 CardNumber = card.CardNumber,
                 Name = card.Name,
                 VersionNumber = currentVersion?.VersionNumber,

@@ -1,4 +1,5 @@
 ﻿using ProfitFood.Applications.Dto.Menus;
+using ProfitFood.Applications.Dto.Recipes;
 using ProfitFood.Applications.Dto.References;
 using ProfitFood.Applications.Services.Interfaces;
 using ProfitFood.UI.ViewModels.Reference;
@@ -15,6 +16,9 @@ namespace ProfitFood.UI.ViewModels
         private readonly IDailyMenuAppService _service;
         private readonly ISeasonAppService _seasonService;
         private readonly IDailyMenuAttendanceAppService _attendanceService;
+        private readonly IMealTypeAppService _mealTypeService;
+        private readonly IDishAppService _dishService;
+        private readonly IRecipeCardAppService _recipeCardService;
 
         private DailyMenuListItemDto? _selectedItem;
         private DailyMenuListItemDto _editModel = new();
@@ -24,6 +28,10 @@ namespace ProfitFood.UI.ViewModels
         private bool _isBusy;
         private bool _isEditMode;
         private bool _isCreateMode;
+        private DailyMenuItemDto? _selectedPosition;
+        private Guid? _newPositionMealTypeId;
+        private Guid? _newPositionDishId;
+        private Guid? _newPositionRecipeCardId;
 
         /// <summary>
         /// Инициализирует список меню.
@@ -34,15 +42,25 @@ namespace ProfitFood.UI.ViewModels
         public DailyMenuListViewModel(
             IDailyMenuAppService service,
             ISeasonAppService seasonService,
-            IDailyMenuAttendanceAppService attendanceService)
+            IDailyMenuAttendanceAppService attendanceService,
+            IMealTypeAppService mealTypeService,
+            IDishAppService dishService,
+            IRecipeCardAppService recipeCardService)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _seasonService = seasonService ?? throw new ArgumentNullException(nameof(seasonService));
             _attendanceService = attendanceService ?? throw new ArgumentNullException(nameof(attendanceService));
+            _mealTypeService = mealTypeService ?? throw new ArgumentNullException(nameof(mealTypeService));
+            _dishService = dishService ?? throw new ArgumentNullException(nameof(dishService));
+            _recipeCardService = recipeCardService ?? throw new ArgumentNullException(nameof(recipeCardService));
 
             Items = new ObservableCollection<DailyMenuListItemDto>();
             SeasonOptions = new ObservableCollection<SeasonDto>();
             AttendanceRows = new ObservableCollection<DailyMenuAttendanceDto>();
+            Positions = new ObservableCollection<DailyMenuItemDto>();
+            MealTypeOptions = new ObservableCollection<MealTypeDto>();
+            DishOptions = new ObservableCollection<DishDto>();
+            RecipeCardOptions = new ObservableCollection<RecipeCardListItemDto>();
 
             RefreshCommand = new RelayCommand(async _ => await LoadAsync(), _ => !IsBusy);
             SearchCommand = new RelayCommand(async _ => await SearchAsync(), _ => !IsBusy);
@@ -53,6 +71,8 @@ namespace ProfitFood.UI.ViewModels
             SaveAttendanceCommand = new RelayCommand(
                 async _ => await SaveAttendanceAsync(),
                 _ => !IsBusy && EditModel.Id != Guid.Empty);
+            AddPositionCommand = new RelayCommand(async _ => await AddPositionAsync(), _ => !IsBusy);
+            RemovePositionCommand = new RelayCommand(_ => RemovePosition(), _ => !IsBusy && SelectedPosition is not null);
         }
 
         /// <summary>Меню, начиная с самого свежего.</summary>
@@ -63,6 +83,18 @@ namespace ProfitFood.UI.ViewModels
 
         /// <summary>Посещаемость по группам детей для выбранного меню.</summary>
         public ObservableCollection<DailyMenuAttendanceDto> AttendanceRows { get; }
+
+        /// <summary>Блюда выбранного меню.</summary>
+        public ObservableCollection<DailyMenuItemDto> Positions { get; }
+
+        /// <summary>Приёмы пищи для добавления блюда.</summary>
+        public ObservableCollection<MealTypeDto> MealTypeOptions { get; }
+
+        /// <summary>Блюда для добавления в меню.</summary>
+        public ObservableCollection<DishDto> DishOptions { get; }
+
+        /// <summary>Техкарты выбранного блюда.</summary>
+        public ObservableCollection<RecipeCardListItemDto> RecipeCardOptions { get; }
 
         /// <summary>Заголовок раздела.</summary>
         public string Title => "Меню";
@@ -80,6 +112,7 @@ namespace ProfitFood.UI.ViewModels
                     IsEditMode = true;
                     StatusMessage = "Запись выбрана для редактирования.";
                     _ = LoadAttendanceAsync(value.Id);
+                    _ = LoadPositionsAsync(value.Id);
                 }
 
                 UpdateCommandState();
@@ -144,6 +177,47 @@ namespace ProfitFood.UI.ViewModels
             private set => SetProperty(ref _isCreateMode, value);
         }
 
+        /// <summary>Выбранное блюдо в таблице меню.</summary>
+        public DailyMenuItemDto? SelectedPosition
+        {
+            get => _selectedPosition;
+            set
+            {
+                if (SetProperty(ref _selectedPosition, value))
+                {
+                    (RemovePositionCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        /// <summary>Приём пищи для добавляемого блюда.</summary>
+        public Guid? NewPositionMealTypeId
+        {
+            get => _newPositionMealTypeId;
+            set => SetProperty(ref _newPositionMealTypeId, value);
+        }
+
+        /// <summary>Блюдо для добавления; смена блюда перезаполняет список техкарт.</summary>
+        public Guid? NewPositionDishId
+        {
+            get => _newPositionDishId;
+            set
+            {
+                if (SetProperty(ref _newPositionDishId, value))
+                {
+                    NewPositionRecipeCardId = null;
+                    _ = LoadRecipeCardsAsync(value);
+                }
+            }
+        }
+
+        /// <summary>Техкарта для добавляемого блюда.</summary>
+        public Guid? NewPositionRecipeCardId
+        {
+            get => _newPositionRecipeCardId;
+            set => SetProperty(ref _newPositionRecipeCardId, value);
+        }
+
         public ICommand RefreshCommand { get; }
         public ICommand SearchCommand { get; }
         public ICommand DeleteCommand { get; }
@@ -151,6 +225,8 @@ namespace ProfitFood.UI.ViewModels
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
         public ICommand SaveAttendanceCommand { get; }
+        public ICommand AddPositionCommand { get; }
+        public ICommand RemovePositionCommand { get; }
 
         /// <summary>Загружает список при первом показе раздела.</summary>
         public Task InitializeAsync() => LoadAsync();
@@ -163,6 +239,7 @@ namespace ProfitFood.UI.ViewModels
                 IsBusy = true;
 
                 await LoadSeasonOptionsAsync();
+                await LoadOptionsAsync();
 
                 ReplaceItems(await _service.GetAllAsync());
                 StatusMessage = $"Загружено меню: {Items.Count}.";
@@ -191,7 +268,15 @@ namespace ProfitFood.UI.ViewModels
                 await _service.SaveAsync(EditModel);
                 await LoadAsync();
 
-                StartCreate();
+                // Карточка не сбрасывается: у нового меню появился Id, и только теперь
+                // можно сохранить блюда и посещаемость.
+                var saved = Items.FirstOrDefault(x => x.MenuDate == EditModel.MenuDate);
+                if (saved is not null)
+                {
+                    await _service.SaveItemsAsync(saved.Id, Positions.ToList());
+                    SelectedItem = saved;
+                }
+
                 StatusMessage = "Меню сохранено.";
             }
             catch (Exception exception)
@@ -255,6 +340,8 @@ namespace ProfitFood.UI.ViewModels
             SelectedItem = null;
             EditModel = new DailyMenuListItemDto();
             EditDate = DateTime.Today;
+            Positions.Clear();
+            AttendanceRows.Clear();
             IsCreateMode = true;
             IsEditMode = false;
         }
@@ -301,6 +388,11 @@ namespace ProfitFood.UI.ViewModels
                 {
                     AttendanceRows.Add(row);
                 }
+
+                if (AttendanceRows.Count == 0)
+                {
+                    StatusMessage = "В справочнике «Группы детей» нет записей — посещаемость заполнять нечем.";
+                }
             }
             catch (Exception exception)
             {
@@ -328,6 +420,135 @@ namespace ProfitFood.UI.ViewModels
             }
         }
 
+        /// <summary>Загружает справочники приёмов пищи и блюд для добавления в меню.</summary>
+        private async Task LoadOptionsAsync()
+        {
+            var mealTypes = await _mealTypeService.GetAllAsync();
+            var dishes = await _dishService.GetAllAsync();
+
+            MealTypeOptions.Clear();
+            foreach (var mealType in mealTypes)
+            {
+                MealTypeOptions.Add(mealType);
+            }
+
+            DishOptions.Clear();
+            foreach (var dish in dishes)
+            {
+                DishOptions.Add(dish);
+            }
+        }
+
+        /// <summary>Загружает техкарты выбранного блюда: какую именно готовить, выбирает пользователь.</summary>
+        private async Task LoadRecipeCardsAsync(Guid? dishId)
+        {
+            RecipeCardOptions.Clear();
+
+            if (dishId is null || dishId == Guid.Empty)
+            {
+                return;
+            }
+
+            var cards = await _recipeCardService.GetAllAsync();
+
+            foreach (var card in cards.Where(x => x.DishId == dishId.Value))
+            {
+                RecipeCardOptions.Add(card);
+            }
+        }
+
+        /// <summary>Загружает блюда выбранного меню.</summary>
+        private async Task LoadPositionsAsync(Guid dailyMenuId)
+        {
+            try
+            {
+                Positions.Clear();
+
+                foreach (var position in await _service.GetItemsAsync(dailyMenuId))
+                {
+                    Positions.Add(position);
+                }
+            }
+            catch (Exception exception)
+            {
+                StatusMessage = $"Ошибка загрузки блюд меню: {exception.Message}";
+            }
+        }
+
+        /// <summary>Добавляет блюдо в список меню по значениям панели добавления.</summary>
+        private async Task AddPositionAsync()
+        {
+            if (NewPositionMealTypeId is null || NewPositionMealTypeId == Guid.Empty)
+            {
+                StatusMessage = "Выберите приём пищи для блюда.";
+                return;
+            }
+
+            if (NewPositionDishId is null || NewPositionDishId == Guid.Empty)
+            {
+                StatusMessage = "Выберите блюдо.";
+                return;
+            }
+
+            if (NewPositionRecipeCardId is null || NewPositionRecipeCardId == Guid.Empty)
+            {
+                StatusMessage = "Выберите техкарту блюда.";
+                return;
+            }
+
+            try
+            {
+                var card = await _recipeCardService.GetByIdAsync(NewPositionRecipeCardId.Value);
+
+                if (card is null || card.Version.Id == Guid.Empty)
+                {
+                    StatusMessage = "У выбранной техкарты нет версии: заполните её в разделе «Техкарты».";
+                    return;
+                }
+
+                if (Positions.Any(x => x.RecipeCardVersionId == card.Version.Id))
+                {
+                    StatusMessage = "Это блюдо уже добавлено в меню.";
+                    return;
+                }
+
+                var mealType = MealTypeOptions.FirstOrDefault(x => x.Id == NewPositionMealTypeId.Value);
+                var dish = DishOptions.FirstOrDefault(x => x.Id == NewPositionDishId.Value);
+
+                Positions.Add(new DailyMenuItemDto
+                {
+                    MealTypeId = NewPositionMealTypeId.Value,
+                    MealTypeName = mealType?.Name ?? string.Empty,
+                    DishId = NewPositionDishId.Value,
+                    DishName = dish?.Name ?? string.Empty,
+                    RecipeCardVersionId = card.Version.Id,
+                    RecipeCardNumber = card.CardNumber,
+                    OutputQuantity = card.Version.OutputQuantity,
+                    OutputUnitName = card.Version.OutputUnitName,
+                    SortOrder = Positions.Count + 1
+                });
+
+                StatusMessage = "Блюдо добавлено в меню.";
+            }
+            catch (Exception exception)
+            {
+                StatusMessage = $"Ошибка добавления блюда: {exception.Message}";
+            }
+        }
+
+        /// <summary>Убирает выбранное блюдо из списка меню.</summary>
+        private void RemovePosition()
+        {
+            if (SelectedPosition is null)
+            {
+                return;
+            }
+
+            Positions.Remove(SelectedPosition);
+            SelectedPosition = null;
+            StatusMessage = "Блюдо убрано из меню.";
+        }
+
         private static DailyMenuListItemDto BuildEditModel(DailyMenuListItemDto item) => new()
         {
             Id = item.Id,
@@ -348,6 +569,8 @@ namespace ProfitFood.UI.ViewModels
             (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (CancelCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (SaveAttendanceCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (AddPositionCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (RemovePositionCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
     }
 }

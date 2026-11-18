@@ -113,6 +113,11 @@ namespace ProfitFood.Infrastructure.Services.Menus
 
                     return new DailyMenuItemDto
                     {
+                        Id = item.Id,
+                        MealTypeId = item.MealTypeId,
+                        DishId = item.DishId,
+                        RecipeCardVersionId = item.RecipeCardVersionId,
+                        SortOrder = item.SortOrder,
                         MealTypeName = mealTypes.TryGetValue(item.MealTypeId, out var mealTypeInfo)
                             ? mealTypeInfo.Name
                             : string.Empty,
@@ -125,6 +130,89 @@ namespace ProfitFood.Infrastructure.Services.Menus
                     };
                 })
                 .ToList();
+        }
+
+        /// <summary>Сохраняет блюда меню: обновляет существующие, добавляет новые и убирает лишние.</summary>
+        /// <exception cref="ArgumentNullException">Возникает, если список строк пуст.</exception>
+        /// <exception cref="InvalidOperationException">Возникает при незаполненных ссылках или отсутствии меню.</exception>
+        public async Task SaveItemsAsync(
+            Guid dailyMenuId,
+            IReadOnlyCollection<DailyMenuItemDto> rows,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(rows);
+
+            if (dailyMenuId == Guid.Empty)
+            {
+                throw new InvalidOperationException("Сначала сохраните меню: блюда привязываются к конкретной дате.");
+            }
+
+            foreach (var row in rows)
+            {
+                if (row.MealTypeId == Guid.Empty)
+                {
+                    throw new InvalidOperationException("В строке меню не выбран приём пищи.");
+                }
+
+                if (row.DishId == Guid.Empty)
+                {
+                    throw new InvalidOperationException("В строке меню не выбрано блюдо.");
+                }
+
+                if (row.RecipeCardVersionId == Guid.Empty)
+                {
+                    throw new InvalidOperationException(
+                        "У выбранного блюда нет технологической карты: сначала заполните техкарту.");
+                }
+            }
+
+            await using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+            await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+
+            try
+            {
+                var stored = await context.DailyMenuItems
+                    .Where(x => x.DailyMenuId == dailyMenuId)
+                    .ToListAsync(cancellationToken);
+
+                var incomingIds = rows
+                    .Where(x => x.Id != Guid.Empty)
+                    .Select(x => x.Id)
+                    .ToHashSet();
+
+                foreach (var removed in stored.Where(x => !incomingIds.Contains(x.Id)))
+                {
+                    context.DailyMenuItems.Remove(removed);
+                }
+
+                var sortOrder = 1;
+
+                foreach (var row in rows)
+                {
+                    var target = row.Id == Guid.Empty
+                        ? null
+                        : stored.FirstOrDefault(x => x.Id == row.Id);
+
+                    if (target is null)
+                    {
+                        target = new DailyMenuItem { DailyMenuId = dailyMenuId };
+                        context.DailyMenuItems.Add(target);
+                    }
+
+                    target.MealTypeId = row.MealTypeId;
+                    target.DishId = row.DishId;
+                    target.RecipeCardVersionId = row.RecipeCardVersionId;
+                    target.SortOrder = sortOrder++;
+                }
+
+                await context.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, "Не удалось сохранить блюда меню {DailyMenuId}", dailyMenuId);
+                throw;
+            }
         }
 
         /// <summary>Сохраняет меню: создаёт новое или обновляет существующее.</summary>

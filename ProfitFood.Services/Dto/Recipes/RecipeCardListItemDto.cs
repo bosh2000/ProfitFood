@@ -4,6 +4,9 @@
     public sealed class RecipeCardListItemDto
     {
         public Guid Id { get; set; }
+
+        /// <summary>Блюдо, к которому относится техкарта.</summary>
+        public Guid DishId { get; set; }
         public string CardNumber { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public int? VersionNumber { get; set; }
